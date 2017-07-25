@@ -14,11 +14,11 @@
 namespace net {
 
 namespace common_cert_set_2 {
-#include "net/quic/core/crypto/common_cert_set_2.c"
+#include "net/quic/core/crypto/common_cert_set_2.c.h"
 }
 
 namespace common_cert_set_3 {
-#include "net/quic/core/crypto/common_cert_set_3.c"
+#include "net/quic/core/crypto/common_cert_set_3.c.h"
 }
 
 namespace {

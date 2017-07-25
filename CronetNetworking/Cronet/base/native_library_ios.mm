@@ -4,6 +4,8 @@
 
 #include "base/native_library.h"
 
+#if defined(OS_IOS)
+
 #include "base/logging.h"
 
 #include "base/strings/string_util.h"
@@ -44,3 +46,5 @@ std::string GetNativeLibraryName(StringPiece name) {
 }
 
 }  // namespace base
+
+#endif

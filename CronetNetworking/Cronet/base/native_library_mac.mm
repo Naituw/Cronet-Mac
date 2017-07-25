@@ -4,6 +4,8 @@
 
 #include "base/native_library.h"
 
+#if defined(OS_MACOSX)
+
 #include <dlfcn.h>
 #include <mach-o/getsect.h>
 
@@ -125,3 +127,5 @@ std::string GetNativeLibraryName(StringPiece name) {
 }
 
 }  // namespace base
+
+#endif

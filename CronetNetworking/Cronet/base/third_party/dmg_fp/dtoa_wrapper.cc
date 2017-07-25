@@ -43,4 +43,4 @@ inline static void FREE_DTOA_LOCK(size_t n) {
   lock->Release();
 }
 
-#include "base/third_party/dmg_fp/dtoa.cc"
+#include "base/third_party/dmg_fp/dtoa.cc.h"
