@@ -1951,7 +1951,6 @@
 		C6BB5DFF1F275676005006C4 /* process_handle_posix.cc in Sources */ = {isa = PBXBuildFile; fileRef = C6BB5DFB1F275673005006C4 /* process_handle_posix.cc */; };
 		C6BB5E001F275676005006C4 /* process_metrics_posix.cc in Sources */ = {isa = PBXBuildFile; fileRef = C6BB5DFC1F275674005006C4 /* process_metrics_posix.cc */; };
 		C6BB5E071F2756D3005006C4 /* time_conversion_posix.cc in Sources */ = {isa = PBXBuildFile; fileRef = C6BB5E031F2756D0005006C4 /* time_conversion_posix.cc */; };
-		C6BB5E0C1F275A95005006C4 /* stack_trace.cc in Sources */ = {isa = PBXBuildFile; fileRef = C6BB5E0A1F275A7A005006C4 /* stack_trace.cc */; };
 		C6BB5E0F1F275AC3005006C4 /* stack_trace_posix.cc in Sources */ = {isa = PBXBuildFile; fileRef = C6BB5E0D1F275AC1005006C4 /* stack_trace_posix.cc */; };
 		C6BB5E101F275AD7005006C4 /* bidirectional_stream.cc in Sources */ = {isa = PBXBuildFile; fileRef = C66F7C861F26188A006EFCDD /* bidirectional_stream.cc */; };
 		C6BB5E131F275B7F005006C4 /* bidirectional_stream_c.cc in Sources */ = {isa = PBXBuildFile; fileRef = C6BB5E111F275B77005006C4 /* bidirectional_stream_c.cc */; };
@@ -5621,7 +5620,6 @@
 		C6BB5DFB1F275673005006C4 /* process_handle_posix.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = process_handle_posix.cc; sourceTree = "<group>"; };
 		C6BB5DFC1F275674005006C4 /* process_metrics_posix.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = process_metrics_posix.cc; sourceTree = "<group>"; };
 		C6BB5E031F2756D0005006C4 /* time_conversion_posix.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = time_conversion_posix.cc; sourceTree = "<group>"; };
-		C6BB5E0A1F275A7A005006C4 /* stack_trace.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = stack_trace.cc; path = "../../../../../CronetNetworking 2/CronetNetworking/Cronet/base/debug/stack_trace.cc"; sourceTree = "<group>"; };
 		C6BB5E0D1F275AC1005006C4 /* stack_trace_posix.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stack_trace_posix.cc; sourceTree = "<group>"; };
 		C6BB5E111F275B77005006C4 /* bidirectional_stream_c.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = bidirectional_stream_c.cc; sourceTree = "<group>"; };
 		C6BB5E141F275BAB005006C4 /* bidirectional_stream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bidirectional_stream.h; sourceTree = "<group>"; };
@@ -11748,7 +11746,6 @@
 				C6F7FD171F26055A005996DB /* crash_logging.h */,
 				C6F7FD181F26055A005996DB /* debugger.cc */,
 				C6BB5E0D1F275AC1005006C4 /* stack_trace_posix.cc */,
-				C6BB5E0A1F275A7A005006C4 /* stack_trace.cc */,
 				C6F7FD1A1F26055A005996DB /* stack_trace.h */,
 				C6F7FD1E1F26055A005996DB /* activity_analyzer.h */,
 				C6F7FD201F26055A005996DB /* activity_analyzer.cc */,
@@ -14568,7 +14565,6 @@
 				C6BB5CCC1F2741A4005006C4 /* quic_stream_sequencer.cc in Sources */,
 				C6F7063A1F26055F005996DB /* task_scheduler.cc in Sources */,
 				C66FA4211F2618F2006EFCDD /* a_i2d_fp.c in Sources */,
-				C6BB5E0C1F275A95005006C4 /* stack_trace.cc in Sources */,
 				C6F703FE1F26055E005996DB /* call_with_eh_frame.cc in Sources */,
 				C66F87821F261890006EFCDD /* x509_cert_types_mac.cc in Sources */,
 				C6F703F91F26055E005996DB /* foundation_util.mm in Sources */,
