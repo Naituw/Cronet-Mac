@@ -7,12 +7,20 @@
 //
 
 #import "ViewController.h"
+#import <CronetNetworking/components/cronet/ios/Cronet.h>
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
+    [Cronet start];
+    [Cronet registerHttpProtocolHandler];
+    
+    [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:@"http://api.weibo.com/2/short_url/info.json"] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSLog(@"response: %@", response);
+    }] resume];
+    
     // Do any additional setup after loading the view.
 }
 

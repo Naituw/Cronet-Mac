@@ -344,7 +344,6 @@
 			baseConfigurationReference = 336C281FF9A36237C7C65718 /* Pods-JSONRequest.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = JSONRequest/JSONRequest.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = DMJXDB9H6Q;
 				INFOPLIST_FILE = JSONRequest/Info.plist;
@@ -359,7 +358,6 @@
 			baseConfigurationReference = A4F5D8F18D062885F39FCAE0 /* Pods-JSONRequest.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = JSONRequest/JSONRequest.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = DMJXDB9H6Q;
 				INFOPLIST_FILE = JSONRequest/Info.plist;
