@@ -39,7 +39,7 @@ namespace net {
 
 namespace {
 
-#include "net/http/transport_security_state_ct_policies.inc"
+#include "net/http/transport_security_state_ct_policies.inc.h"
 
 #if BUILDFLAG(INCLUDE_TRANSPORT_SECURITY_STATE_PRELOAD_LIST)
 #include "net/http/transport_security_state_static.h"

@@ -8,8 +8,8 @@
 
 #include <stdint.h>
 
-#include "net/quic/core/crypto/common_cert_set_2a.inc"
-#include "net/quic/core/crypto/common_cert_set_2b.inc"
+#include "net/quic/core/crypto/common_cert_set_2a.inc.h"
+#include "net/quic/core/crypto/common_cert_set_2b.inc.h"
 
 static const size_t kNumCerts = 54;
 static const unsigned char* const kCerts[] = {

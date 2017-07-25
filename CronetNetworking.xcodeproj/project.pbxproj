@@ -297,7 +297,7 @@
 		C66F87C41F261890006EFCDD /* crl_set.cc in Sources */ = {isa = PBXBuildFile; fileRef = C66F73641F261886006EFCDD /* crl_set.cc */; };
 		C66F87C51F261890006EFCDD /* ct_log_response_parser.cc in Sources */ = {isa = PBXBuildFile; fileRef = C66F73651F261886006EFCDD /* ct_log_response_parser.cc */; };
 		C66F87C71F261890006EFCDD /* crl_set_storage.cc in Sources */ = {isa = PBXBuildFile; fileRef = C66F73671F261886006EFCDD /* crl_set_storage.cc */; };
-		C66F87C81F261890006EFCDD /* cert_verify_proc_blacklist.inc in Sources */ = {isa = PBXBuildFile; fileRef = C66F73681F261886006EFCDD /* cert_verify_proc_blacklist.inc */; };
+		C66F87C81F261890006EFCDD /* cert_verify_proc_blacklist.inc.h in Sources */ = {isa = PBXBuildFile; fileRef = C66F73681F261886006EFCDD /* cert_verify_proc_blacklist.inc.h */; };
 		C66F87C91F261890006EFCDD /* multi_log_ct_verifier.cc in Sources */ = {isa = PBXBuildFile; fileRef = C66F73691F261886006EFCDD /* multi_log_ct_verifier.cc */; };
 		C66F87CA1F261890006EFCDD /* merkle_tree_leaf.cc in Sources */ = {isa = PBXBuildFile; fileRef = C66F736A1F261886006EFCDD /* merkle_tree_leaf.cc */; };
 		C66F87CB1F261890006EFCDD /* ct_sct_to_string.h in Headers */ = {isa = PBXBuildFile; fileRef = C66F736B1F261886006EFCDD /* ct_sct_to_string.h */; };
@@ -566,7 +566,7 @@
 		C66F89AF1F261892006EFCDD /* bidirectional_stream_request_info.cc in Sources */ = {isa = PBXBuildFile; fileRef = C66F7C891F26188A006EFCDD /* bidirectional_stream_request_info.cc */; };
 		C66F89B01F261892006EFCDD /* http_response_headers.cc in Sources */ = {isa = PBXBuildFile; fileRef = C66F7C8A1F26188A006EFCDD /* http_response_headers.cc */; };
 		C66F89B21F261892006EFCDD /* http_cache_transaction.cc in Sources */ = {isa = PBXBuildFile; fileRef = C66F7C8C1F26188A006EFCDD /* http_cache_transaction.cc */; };
-		C66F89B51F261892006EFCDD /* transport_security_state_ct_policies.inc in Sources */ = {isa = PBXBuildFile; fileRef = C66F7C901F26188A006EFCDD /* transport_security_state_ct_policies.inc */; };
+		C66F89B51F261892006EFCDD /* transport_security_state_ct_policies.inc.h in Sources */ = {isa = PBXBuildFile; fileRef = C66F7C901F26188A006EFCDD /* transport_security_state_ct_policies.inc.h */; };
 		C66F89B61F261892006EFCDD /* failing_http_transaction_factory.cc in Sources */ = {isa = PBXBuildFile; fileRef = C66F7C911F26188A006EFCDD /* failing_http_transaction_factory.cc */; };
 		C66F89B91F261892006EFCDD /* http_auth_handler.cc in Sources */ = {isa = PBXBuildFile; fileRef = C66F7C941F26188A006EFCDD /* http_auth_handler.cc */; };
 		C66F89BA1F261892006EFCDD /* http_cache.cc in Sources */ = {isa = PBXBuildFile; fileRef = C66F7C951F26188A006EFCDD /* http_cache.cc */; };
@@ -614,7 +614,7 @@
 		C66F8A0C1F261892006EFCDD /* random_util.cc in Sources */ = {isa = PBXBuildFile; fileRef = C66F7CEE1F26188A006EFCDD /* random_util.cc */; };
 		C66F8A0D1F261892006EFCDD /* http2_random.h in Headers */ = {isa = PBXBuildFile; fileRef = C66F7CEF1F26188A006EFCDD /* http2_random.h */; };
 		C66F8A0E1F261892006EFCDD /* http2_hpack_constants.cc in Sources */ = {isa = PBXBuildFile; fileRef = C66F7CF11F26188A006EFCDD /* http2_hpack_constants.cc */; };
-		C66F8A151F261892006EFCDD /* hpack_static_table_entries.inc in Sources */ = {isa = PBXBuildFile; fileRef = C66F7CF91F26188A006EFCDD /* hpack_static_table_entries.inc */; };
+		C66F8A151F261892006EFCDD /* hpack_static_table_entries.inc.h in Sources */ = {isa = PBXBuildFile; fileRef = C66F7CF91F26188A006EFCDD /* hpack_static_table_entries.inc.h */; };
 		C66F8A181F261892006EFCDD /* hpack_string_decoder.h in Headers */ = {isa = PBXBuildFile; fileRef = C66F7CFD1F26188A006EFCDD /* hpack_string_decoder.h */; };
 		C66F8A191F261892006EFCDD /* hpack_decoder_listener.cc in Sources */ = {isa = PBXBuildFile; fileRef = C66F7CFE1F26188A006EFCDD /* hpack_decoder_listener.cc */; };
 		C66F8A1C1F261892006EFCDD /* hpack_entry_decoder.h in Headers */ = {isa = PBXBuildFile; fileRef = C66F7D011F26188A006EFCDD /* hpack_entry_decoder.h */; };
@@ -1229,18 +1229,6 @@
 		C66F91AF1F2618AC006EFCDD /* random.h in Headers */ = {isa = PBXBuildFile; fileRef = C66F915F1F2618AB006EFCDD /* random.h */; };
 		C66F91B01F2618AC006EFCDD /* p224_spake.h in Headers */ = {isa = PBXBuildFile; fileRef = C66F91601F2618AB006EFCDD /* p224_spake.h */; };
 		C66FA3791F2618F1006EFCDD /* err_data.c in Sources */ = {isa = PBXBuildFile; fileRef = C66F91B41F2618D3006EFCDD /* err_data.c */; };
-		C66FA3AF1F2618F2006EFCDD /* chacha-x86.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F92001F2618D4006EFCDD /* chacha-x86.S */; };
-		C66FA3B01F2618F2006EFCDD /* co-586.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F92021F2618D4006EFCDD /* co-586.S */; };
-		C66FA3B11F2618F2006EFCDD /* vpaes-x86.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F92031F2618D4006EFCDD /* vpaes-x86.S */; };
-		C66FA3B21F2618F2006EFCDD /* sha512-586.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F92041F2618D4006EFCDD /* sha512-586.S */; };
-		C66FA3B31F2618F2006EFCDD /* sha1-586.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F92051F2618D4006EFCDD /* sha1-586.S */; };
-		C66FA3B41F2618F2006EFCDD /* aesni-x86.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F92061F2618D4006EFCDD /* aesni-x86.S */; };
-		C66FA3B51F2618F2006EFCDD /* md5-586.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F92071F2618D4006EFCDD /* md5-586.S */; };
-		C66FA3B61F2618F2006EFCDD /* x86-mont.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F92081F2618D4006EFCDD /* x86-mont.S */; };
-		C66FA3B71F2618F2006EFCDD /* bn-586.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F92091F2618D4006EFCDD /* bn-586.S */; };
-		C66FA3B81F2618F2006EFCDD /* aes-586.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F920A1F2618D4006EFCDD /* aes-586.S */; };
-		C66FA3B91F2618F2006EFCDD /* sha256-586.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F920B1F2618D4006EFCDD /* sha256-586.S */; };
-		C66FA3BA1F2618F2006EFCDD /* ghash-x86.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F920C1F2618D4006EFCDD /* ghash-x86.S */; };
 		C66FA3CE1F2618F2006EFCDD /* chacha-x86_64.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F922C1F2618D4006EFCDD /* chacha-x86_64.S */; };
 		C66FA3CF1F2618F2006EFCDD /* sha512-x86_64.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F922E1F2618D4006EFCDD /* sha512-x86_64.S */; };
 		C66FA3D01F2618F2006EFCDD /* sha256-x86_64.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F922F1F2618D4006EFCDD /* sha256-x86_64.S */; };
@@ -1543,7 +1531,6 @@
 		C66FA5381F2618F5006EFCDD /* internal.h in Headers */ = {isa = PBXBuildFile; fileRef = C66F948F1F2618D4006EFCDD /* internal.h */; };
 		C66FA5391F2618F5006EFCDD /* poly1305_vec.c in Sources */ = {isa = PBXBuildFile; fileRef = C66F94911F2618D4006EFCDD /* poly1305_vec.c */; };
 		C66FA53A1F2618F5006EFCDD /* poly1305_arm.c in Sources */ = {isa = PBXBuildFile; fileRef = C66F94921F2618D4006EFCDD /* poly1305_arm.c */; };
-		C66FA53B1F2618F5006EFCDD /* poly1305_arm_asm.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F94931F2618D4006EFCDD /* poly1305_arm_asm.S */; };
 		C66FA53D1F2618F5006EFCDD /* poly1305.c in Sources */ = {isa = PBXBuildFile; fileRef = C66F94961F2618D4006EFCDD /* poly1305.c */; };
 		C66FA53E1F2618F5006EFCDD /* rsa_asn1.c in Sources */ = {isa = PBXBuildFile; fileRef = C66F94981F2618D5006EFCDD /* rsa_asn1.c */; };
 		C66FA5401F2618F5006EFCDD /* refcount_lock.c in Sources */ = {isa = PBXBuildFile; fileRef = C66F949B1F2618D5006EFCDD /* refcount_lock.c */; };
@@ -1571,7 +1558,6 @@
 		C66FA55E1F2618F5006EFCDD /* stack.c in Sources */ = {isa = PBXBuildFile; fileRef = C66F94C81F2618D5006EFCDD /* stack.c */; };
 		C66FA55F1F2618F5006EFCDD /* cpu-aarch64-linux.c in Sources */ = {isa = PBXBuildFile; fileRef = C66F94C91F2618D5006EFCDD /* cpu-aarch64-linux.c */; };
 		C66FA5601F2618F5006EFCDD /* internal.h in Headers */ = {isa = PBXBuildFile; fileRef = C66F94CB1F2618D5006EFCDD /* internal.h */; };
-		C66FA5611F2618F5006EFCDD /* x25519-asm-arm.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F94CD1F2618D5006EFCDD /* x25519-asm-arm.S */; };
 		C66FA5621F2618F5006EFCDD /* x25519-asm-x86_64.S in Sources */ = {isa = PBXBuildFile; fileRef = C66F94CE1F2618D5006EFCDD /* x25519-asm-x86_64.S */; };
 		C66FA5641F2618F5006EFCDD /* x25519-x86_64.c in Sources */ = {isa = PBXBuildFile; fileRef = C66F94D11F2618D5006EFCDD /* x25519-x86_64.c */; };
 		C66FA5651F2618F5006EFCDD /* spake25519.c in Sources */ = {isa = PBXBuildFile; fileRef = C66F94D21F2618D5006EFCDD /* spake25519.c */; };
@@ -3057,7 +3043,7 @@
 		C66F73641F261886006EFCDD /* crl_set.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = crl_set.cc; sourceTree = "<group>"; };
 		C66F73651F261886006EFCDD /* ct_log_response_parser.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ct_log_response_parser.cc; sourceTree = "<group>"; };
 		C66F73671F261886006EFCDD /* crl_set_storage.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = crl_set_storage.cc; sourceTree = "<group>"; };
-		C66F73681F261886006EFCDD /* cert_verify_proc_blacklist.inc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.pascal; path = cert_verify_proc_blacklist.inc; sourceTree = "<group>"; };
+		C66F73681F261886006EFCDD /* cert_verify_proc_blacklist.inc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cert_verify_proc_blacklist.inc.h; sourceTree = "<group>"; };
 		C66F73691F261886006EFCDD /* multi_log_ct_verifier.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = multi_log_ct_verifier.cc; sourceTree = "<group>"; };
 		C66F736A1F261886006EFCDD /* merkle_tree_leaf.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = merkle_tree_leaf.cc; sourceTree = "<group>"; };
 		C66F736B1F261886006EFCDD /* ct_sct_to_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ct_sct_to_string.h; sourceTree = "<group>"; };
@@ -3342,7 +3328,7 @@
 		C66F7C891F26188A006EFCDD /* bidirectional_stream_request_info.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bidirectional_stream_request_info.cc; sourceTree = "<group>"; };
 		C66F7C8A1F26188A006EFCDD /* http_response_headers.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http_response_headers.cc; sourceTree = "<group>"; };
 		C66F7C8C1F26188A006EFCDD /* http_cache_transaction.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http_cache_transaction.cc; sourceTree = "<group>"; };
-		C66F7C901F26188A006EFCDD /* transport_security_state_ct_policies.inc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.pascal; path = transport_security_state_ct_policies.inc; sourceTree = "<group>"; };
+		C66F7C901F26188A006EFCDD /* transport_security_state_ct_policies.inc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = transport_security_state_ct_policies.inc.h; sourceTree = "<group>"; };
 		C66F7C911F26188A006EFCDD /* failing_http_transaction_factory.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = failing_http_transaction_factory.cc; sourceTree = "<group>"; };
 		C66F7C941F26188A006EFCDD /* http_auth_handler.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http_auth_handler.cc; sourceTree = "<group>"; };
 		C66F7C951F26188A006EFCDD /* http_cache.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http_cache.cc; sourceTree = "<group>"; };
@@ -3393,7 +3379,7 @@
 		C66F7CEE1F26188A006EFCDD /* random_util.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = random_util.cc; sourceTree = "<group>"; };
 		C66F7CEF1F26188A006EFCDD /* http2_random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http2_random.h; sourceTree = "<group>"; };
 		C66F7CF11F26188A006EFCDD /* http2_hpack_constants.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http2_hpack_constants.cc; sourceTree = "<group>"; };
-		C66F7CF91F26188A006EFCDD /* hpack_static_table_entries.inc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.pascal; path = hpack_static_table_entries.inc; sourceTree = "<group>"; };
+		C66F7CF91F26188A006EFCDD /* hpack_static_table_entries.inc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hpack_static_table_entries.inc.h; sourceTree = "<group>"; };
 		C66F7CFD1F26188A006EFCDD /* hpack_string_decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hpack_string_decoder.h; sourceTree = "<group>"; };
 		C66F7CFE1F26188A006EFCDD /* hpack_decoder_listener.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hpack_decoder_listener.cc; sourceTree = "<group>"; };
 		C66F7D011F26188A006EFCDD /* hpack_entry_decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hpack_entry_decoder.h; sourceTree = "<group>"; };
@@ -4607,18 +4593,6 @@
 		C66F915F1F2618AB006EFCDD /* random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = random.h; sourceTree = "<group>"; };
 		C66F91601F2618AB006EFCDD /* p224_spake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = p224_spake.h; sourceTree = "<group>"; };
 		C66F91B41F2618D3006EFCDD /* err_data.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = err_data.c; sourceTree = "<group>"; };
-		C66F92001F2618D4006EFCDD /* chacha-x86.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "chacha-x86.S"; sourceTree = "<group>"; };
-		C66F92021F2618D4006EFCDD /* co-586.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "co-586.S"; sourceTree = "<group>"; };
-		C66F92031F2618D4006EFCDD /* vpaes-x86.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "vpaes-x86.S"; sourceTree = "<group>"; };
-		C66F92041F2618D4006EFCDD /* sha512-586.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "sha512-586.S"; sourceTree = "<group>"; };
-		C66F92051F2618D4006EFCDD /* sha1-586.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "sha1-586.S"; sourceTree = "<group>"; };
-		C66F92061F2618D4006EFCDD /* aesni-x86.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "aesni-x86.S"; sourceTree = "<group>"; };
-		C66F92071F2618D4006EFCDD /* md5-586.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "md5-586.S"; sourceTree = "<group>"; };
-		C66F92081F2618D4006EFCDD /* x86-mont.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "x86-mont.S"; sourceTree = "<group>"; };
-		C66F92091F2618D4006EFCDD /* bn-586.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "bn-586.S"; sourceTree = "<group>"; };
-		C66F920A1F2618D4006EFCDD /* aes-586.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "aes-586.S"; sourceTree = "<group>"; };
-		C66F920B1F2618D4006EFCDD /* sha256-586.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "sha256-586.S"; sourceTree = "<group>"; };
-		C66F920C1F2618D4006EFCDD /* ghash-x86.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "ghash-x86.S"; sourceTree = "<group>"; };
 		C66F922C1F2618D4006EFCDD /* chacha-x86_64.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "chacha-x86_64.S"; sourceTree = "<group>"; };
 		C66F922E1F2618D4006EFCDD /* sha512-x86_64.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "sha512-x86_64.S"; sourceTree = "<group>"; };
 		C66F922F1F2618D4006EFCDD /* sha256-x86_64.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "sha256-x86_64.S"; sourceTree = "<group>"; };
@@ -4672,14 +4646,7 @@
 		C66F929B1F2618D4006EFCDD /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		C66F929C1F2618D4006EFCDD /* ripemd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ripemd.c; sourceTree = "<group>"; };
 		C66F929F1F2618D4006EFCDD /* cpu-ppc64le.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "cpu-ppc64le.c"; sourceTree = "<group>"; };
-		C66F92A11F2618D4006EFCDD /* x86_64-xlate.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "x86_64-xlate.pl"; sourceTree = "<group>"; };
-		C66F92A21F2618D4006EFCDD /* x86gas.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = x86gas.pl; sourceTree = "<group>"; };
 		C66F92A31F2618D4006EFCDD /* readme */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = readme; sourceTree = "<group>"; };
-		C66F92A41F2618D4006EFCDD /* x86nasm.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = x86nasm.pl; sourceTree = "<group>"; };
-		C66F92A51F2618D4006EFCDD /* arm-xlate.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "arm-xlate.pl"; sourceTree = "<group>"; };
-		C66F92A61F2618D4006EFCDD /* x86masm.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = x86masm.pl; sourceTree = "<group>"; };
-		C66F92A71F2618D4006EFCDD /* ppc-xlate.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "ppc-xlate.pl"; sourceTree = "<group>"; };
-		C66F92A81F2618D4006EFCDD /* x86asm.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = x86asm.pl; sourceTree = "<group>"; };
 		C66F92AA1F2618D4006EFCDD /* a_gentm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = a_gentm.c; sourceTree = "<group>"; };
 		C66F92AB1F2618D4006EFCDD /* asn1_par.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = asn1_par.c; sourceTree = "<group>"; };
 		C66F92AC1F2618D4006EFCDD /* a_strnid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = a_strnid.c; sourceTree = "<group>"; };
@@ -4711,7 +4678,6 @@
 		C66F92C71F2618D4006EFCDD /* f_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = f_string.c; sourceTree = "<group>"; };
 		C66F92C81F2618D4006EFCDD /* asn1_lib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = asn1_lib.c; sourceTree = "<group>"; };
 		C66F92C91F2618D4006EFCDD /* a_utctm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = a_utctm.c; sourceTree = "<group>"; };
-		C66F92CA1F2618D4006EFCDD /* charmap.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = charmap.pl; sourceTree = "<group>"; };
 		C66F92CB1F2618D4006EFCDD /* tasn_typ.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tasn_typ.c; sourceTree = "<group>"; };
 		C66F92CC1F2618D4006EFCDD /* thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thread.c; sourceTree = "<group>"; };
 		C66F92CE1F2618D4006EFCDD /* pem_info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pem_info.c; sourceTree = "<group>"; };
@@ -4759,10 +4725,6 @@
 		C66F930B1F2618D4006EFCDD /* dh_asn1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dh_asn1.c; sourceTree = "<group>"; };
 		C66F930C1F2618D4006EFCDD /* params.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = params.c; sourceTree = "<group>"; };
 		C66F930D1F2618D4006EFCDD /* dh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dh.c; sourceTree = "<group>"; };
-		C66F93121F2618D4006EFCDD /* chacha-x86.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "chacha-x86.pl"; sourceTree = "<group>"; };
-		C66F93131F2618D4006EFCDD /* chacha-armv8.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "chacha-armv8.pl"; sourceTree = "<group>"; };
-		C66F93141F2618D4006EFCDD /* chacha-x86_64.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "chacha-x86_64.pl"; sourceTree = "<group>"; };
-		C66F93151F2618D4006EFCDD /* chacha-armv4.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "chacha-armv4.pl"; sourceTree = "<group>"; };
 		C66F93161F2618D4006EFCDD /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		C66F93171F2618D4006EFCDD /* chacha.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = chacha.c; sourceTree = "<group>"; };
 		C66F93191F2618D4006EFCDD /* mem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mem.c; sourceTree = "<group>"; };
@@ -4805,20 +4767,12 @@
 		C66F93471F2618D4006EFCDD /* ex_data.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ex_data.c; sourceTree = "<group>"; };
 		C66F934A1F2618D4006EFCDD /* md4.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md4.c.h; sourceTree = "<group>"; };
 		C66F934C1F2618D4006EFCDD /* hmac.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hmac.c.h; sourceTree = "<group>"; };
-		C66F934F1F2618D4006EFCDD /* md5-586.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "md5-586.pl"; sourceTree = "<group>"; };
-		C66F93501F2618D4006EFCDD /* md5-x86_64.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "md5-x86_64.pl"; sourceTree = "<group>"; };
 		C66F93511F2618D4006EFCDD /* md5.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.c.h; sourceTree = "<group>"; };
 		C66F93531F2618D4006EFCDD /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = internal.h; sourceTree = "<group>"; };
 		C66F93541F2618D4006EFCDD /* des.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = des.c.h; sourceTree = "<group>"; };
 		C66F93591F2618D4006EFCDD /* ecdsa.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecdsa.c.h; sourceTree = "<group>"; };
 		C66F935A1F2618D4006EFCDD /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		C66F935C1F2618D4006EFCDD /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = internal.h; sourceTree = "<group>"; };
-		C66F935E1F2618D4006EFCDD /* ghashp8-ppc.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "ghashp8-ppc.pl"; sourceTree = "<group>"; };
-		C66F935F1F2618D4006EFCDD /* ghashv8-armx.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "ghashv8-armx.pl"; sourceTree = "<group>"; };
-		C66F93601F2618D4006EFCDD /* ghash-x86.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "ghash-x86.pl"; sourceTree = "<group>"; };
-		C66F93611F2618D4006EFCDD /* aesni-gcm-x86_64.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "aesni-gcm-x86_64.pl"; sourceTree = "<group>"; };
-		C66F93621F2618D4006EFCDD /* ghash-x86_64.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "ghash-x86_64.pl"; sourceTree = "<group>"; };
-		C66F93631F2618D4006EFCDD /* ghash-armv4.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "ghash-armv4.pl"; sourceTree = "<group>"; };
 		C66F93641F2618D4006EFCDD /* cbc.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cbc.c.h; sourceTree = "<group>"; };
 		C66F93661F2618D4006EFCDD /* gcm.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gcm.c.h; sourceTree = "<group>"; };
 		C66F93671F2618D4006EFCDD /* ofb.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofb.c.h; sourceTree = "<group>"; };
@@ -4838,7 +4792,6 @@
 		C66F93791F2618D4006EFCDD /* ec_montgomery.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ec_montgomery.c.h; sourceTree = "<group>"; };
 		C66F937A1F2618D4006EFCDD /* util-64.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "util-64.c.h"; sourceTree = "<group>"; };
 		C66F937B1F2618D4006EFCDD /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = internal.h; sourceTree = "<group>"; };
-		C66F937E1F2618D4006EFCDD /* p256-x86_64-asm.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "p256-x86_64-asm.pl"; sourceTree = "<group>"; };
 		C66F937F1F2618D4006EFCDD /* ec.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ec.c.h; sourceTree = "<group>"; };
 		C66F93801F2618D4006EFCDD /* p224-64.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "p224-64.c.h"; sourceTree = "<group>"; };
 		C66F93811F2618D4006EFCDD /* p256-x86_64-table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "p256-x86_64-table.h"; sourceTree = "<group>"; };
@@ -4862,15 +4815,7 @@
 		C66F93981F2618D4006EFCDD /* gcd.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gcd.c.h; sourceTree = "<group>"; };
 		C66F93991F2618D4006EFCDD /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = internal.h; sourceTree = "<group>"; };
 		C66F939A1F2618D4006EFCDD /* shift.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shift.c.h; sourceTree = "<group>"; };
-		C66F939D1F2618D4006EFCDD /* armv8-mont.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "armv8-mont.pl"; sourceTree = "<group>"; };
-		C66F939E1F2618D4006EFCDD /* rsaz-avx2.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "rsaz-avx2.pl"; sourceTree = "<group>"; };
-		C66F939F1F2618D4006EFCDD /* co-586.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "co-586.pl"; sourceTree = "<group>"; };
-		C66F93A01F2618D4006EFCDD /* x86-mont.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "x86-mont.pl"; sourceTree = "<group>"; };
 		C66F93A11F2618D4006EFCDD /* x86_64-gcc.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "x86_64-gcc.c.h"; sourceTree = "<group>"; };
-		C66F93A21F2618D4006EFCDD /* bn-586.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "bn-586.pl"; sourceTree = "<group>"; };
-		C66F93A31F2618D4006EFCDD /* x86_64-mont.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "x86_64-mont.pl"; sourceTree = "<group>"; };
-		C66F93A41F2618D4006EFCDD /* x86_64-mont5.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "x86_64-mont5.pl"; sourceTree = "<group>"; };
-		C66F93A51F2618D4006EFCDD /* armv4-mont.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "armv4-mont.pl"; sourceTree = "<group>"; };
 		C66F93A61F2618D4006EFCDD /* montgomery.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = montgomery.c.h; sourceTree = "<group>"; };
 		C66F93A81F2618D4006EFCDD /* bytes.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bytes.c.h; sourceTree = "<group>"; };
 		C66F93A91F2618D4006EFCDD /* jacobi.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jacobi.c.h; sourceTree = "<group>"; };
@@ -4887,16 +4832,6 @@
 		C66F93B41F2618D4006EFCDD /* add.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = add.c.h; sourceTree = "<group>"; };
 		C66F93B51F2618D4006EFCDD /* montgomery_inv.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = montgomery_inv.c.h; sourceTree = "<group>"; };
 		C66F93B61F2618D4006EFCDD /* rsaz_exp.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rsaz_exp.c.h; sourceTree = "<group>"; };
-		C66F93B91F2618D4006EFCDD /* sha512-armv8.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "sha512-armv8.pl"; sourceTree = "<group>"; };
-		C66F93BA1F2618D4006EFCDD /* sha512-x86_64.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "sha512-x86_64.pl"; sourceTree = "<group>"; };
-		C66F93BB1F2618D4006EFCDD /* sha256-586.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "sha256-586.pl"; sourceTree = "<group>"; };
-		C66F93BC1F2618D4006EFCDD /* sha1-armv4-large.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "sha1-armv4-large.pl"; sourceTree = "<group>"; };
-		C66F93BD1F2618D4006EFCDD /* sha512-586.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "sha512-586.pl"; sourceTree = "<group>"; };
-		C66F93BE1F2618D4006EFCDD /* sha1-armv8.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "sha1-armv8.pl"; sourceTree = "<group>"; };
-		C66F93BF1F2618D4006EFCDD /* sha256-armv4.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "sha256-armv4.pl"; sourceTree = "<group>"; };
-		C66F93C01F2618D4006EFCDD /* sha512-armv4.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "sha512-armv4.pl"; sourceTree = "<group>"; };
-		C66F93C11F2618D4006EFCDD /* sha1-x86_64.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "sha1-x86_64.pl"; sourceTree = "<group>"; };
-		C66F93C21F2618D4006EFCDD /* sha1-586.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "sha1-586.pl"; sourceTree = "<group>"; };
 		C66F93C31F2618D4006EFCDD /* sha1.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.c.h; sourceTree = "<group>"; };
 		C66F93C41F2618D4006EFCDD /* sha256.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha256.c.h; sourceTree = "<group>"; };
 		C66F93C51F2618D4006EFCDD /* sha512.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha512.c.h; sourceTree = "<group>"; };
@@ -4905,23 +4840,11 @@
 		C66F93C81F2618D4006EFCDD /* intcheck2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = intcheck2.png; sourceTree = "<group>"; };
 		C66F93CA1F2618D4006EFCDD /* ctrdrbg_vectors.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ctrdrbg_vectors.txt; sourceTree = "<group>"; };
 		C66F93CB1F2618D4006EFCDD /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = internal.h; sourceTree = "<group>"; };
-		C66F93CD1F2618D4006EFCDD /* rdrand-x86_64.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "rdrand-x86_64.pl"; sourceTree = "<group>"; };
 		C66F93CE1F2618D4006EFCDD /* rand.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rand.c.h; sourceTree = "<group>"; };
 		C66F93CF1F2618D4006EFCDD /* ctrdrbg.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ctrdrbg.c.h; sourceTree = "<group>"; };
 		C66F93D01F2618D4006EFCDD /* urandom.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = urandom.c.h; sourceTree = "<group>"; };
 		C66F93D31F2618D4006EFCDD /* aes.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aes.c.h; sourceTree = "<group>"; };
 		C66F93D41F2618D4006EFCDD /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = internal.h; sourceTree = "<group>"; };
-		C66F93D61F2618D4006EFCDD /* vpaes-x86_64.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "vpaes-x86_64.pl"; sourceTree = "<group>"; };
-		C66F93D71F2618D4006EFCDD /* bsaes-x86_64.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "bsaes-x86_64.pl"; sourceTree = "<group>"; };
-		C66F93D81F2618D4006EFCDD /* vpaes-x86.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "vpaes-x86.pl"; sourceTree = "<group>"; };
-		C66F93D91F2618D4006EFCDD /* bsaes-armv7.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "bsaes-armv7.pl"; sourceTree = "<group>"; };
-		C66F93DA1F2618D4006EFCDD /* aes-armv4.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "aes-armv4.pl"; sourceTree = "<group>"; };
-		C66F93DB1F2618D4006EFCDD /* aesv8-armx.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "aesv8-armx.pl"; sourceTree = "<group>"; };
-		C66F93DC1F2618D4006EFCDD /* aesni-x86_64.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "aesni-x86_64.pl"; sourceTree = "<group>"; };
-		C66F93DD1F2618D4006EFCDD /* aes-586.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "aes-586.pl"; sourceTree = "<group>"; };
-		C66F93DE1F2618D4006EFCDD /* aesni-x86.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "aesni-x86.pl"; sourceTree = "<group>"; };
-		C66F93DF1F2618D4006EFCDD /* aesp8-ppc.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "aesp8-ppc.pl"; sourceTree = "<group>"; };
-		C66F93E01F2618D4006EFCDD /* aes-x86_64.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "aes-x86_64.pl"; sourceTree = "<group>"; };
 		C66F93E21F2618D4006EFCDD /* mode_wrappers.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mode_wrappers.c.h; sourceTree = "<group>"; };
 		C66F93E31F2618D4006EFCDD /* key_wrap.c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = key_wrap.c.h; sourceTree = "<group>"; };
 		C66F93E61F2618D4006EFCDD /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
@@ -5024,8 +4947,6 @@
 		C66F94521F2618D4006EFCDD /* vpm_int.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vpm_int.h; sourceTree = "<group>"; };
 		C66F94531F2618D4006EFCDD /* x509name.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x509name.c; sourceTree = "<group>"; };
 		C66F94551F2618D4006EFCDD /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = internal.h; sourceTree = "<group>"; };
-		C66F94571F2618D4006EFCDD /* aes128gcmsiv-x86_64.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = "aes128gcmsiv-x86_64.pl"; sourceTree = "<group>"; };
-		C66F94581F2618D4006EFCDD /* chacha20_poly1305_x86_64.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = chacha20_poly1305_x86_64.pl; sourceTree = "<group>"; };
 		C66F94591F2618D4006EFCDD /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		C66F945A1F2618D4006EFCDD /* e_chacha20poly1305.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = e_chacha20poly1305.c; sourceTree = "<group>"; };
 		C66F947E1F2618D4006EFCDD /* e_aesctrhmac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = e_aesctrhmac.c; sourceTree = "<group>"; };
@@ -5045,7 +4966,6 @@
 		C66F94901F2618D4006EFCDD /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		C66F94911F2618D4006EFCDD /* poly1305_vec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = poly1305_vec.c; sourceTree = "<group>"; };
 		C66F94921F2618D4006EFCDD /* poly1305_arm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = poly1305_arm.c; sourceTree = "<group>"; };
-		C66F94931F2618D4006EFCDD /* poly1305_arm_asm.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = poly1305_arm_asm.S; sourceTree = "<group>"; };
 		C66F94961F2618D4006EFCDD /* poly1305.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = poly1305.c; sourceTree = "<group>"; };
 		C66F94981F2618D5006EFCDD /* rsa_asn1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rsa_asn1.c; sourceTree = "<group>"; };
 		C66F94991F2618D5006EFCDD /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
@@ -5079,7 +4999,6 @@
 		C66F94C81F2618D5006EFCDD /* stack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stack.c; sourceTree = "<group>"; };
 		C66F94C91F2618D5006EFCDD /* cpu-aarch64-linux.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "cpu-aarch64-linux.c"; sourceTree = "<group>"; };
 		C66F94CB1F2618D5006EFCDD /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = internal.h; sourceTree = "<group>"; };
-		C66F94CD1F2618D5006EFCDD /* x25519-asm-arm.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "x25519-asm-arm.S"; sourceTree = "<group>"; };
 		C66F94CE1F2618D5006EFCDD /* x25519-asm-x86_64.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "x25519-asm-x86_64.S"; sourceTree = "<group>"; };
 		C66F94CF1F2618D5006EFCDD /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		C66F94D11F2618D5006EFCDD /* x25519-x86_64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "x25519-x86_64.c"; sourceTree = "<group>"; };
@@ -5235,22 +5154,22 @@
 		C6BB5B1A1F273751005006C4 /* key_exchange.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = key_exchange.h; sourceTree = "<group>"; };
 		C6BB5B1B1F273751005006C4 /* quic_crypto_client_config.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = quic_crypto_client_config.cc; sourceTree = "<group>"; };
 		C6BB5B1C1F273751005006C4 /* null_decrypter.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = null_decrypter.cc; sourceTree = "<group>"; };
-		C6BB5B1D1F273751005006C4 /* common_cert_set_2a.inc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.pascal; path = common_cert_set_2a.inc; sourceTree = "<group>"; };
+		C6BB5B1D1F273751005006C4 /* common_cert_set_2a.inc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common_cert_set_2a.inc.h; sourceTree = "<group>"; };
 		C6BB5B1E1F273751005006C4 /* curve25519_key_exchange.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = curve25519_key_exchange.cc; sourceTree = "<group>"; };
 		C6BB5B1F1F273751005006C4 /* quic_encrypter.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = quic_encrypter.cc; sourceTree = "<group>"; };
 		C6BB5B201F273751005006C4 /* crypto_secret_boxer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = crypto_secret_boxer.cc; sourceTree = "<group>"; };
 		C6BB5B211F273751005006C4 /* aes_128_gcm_12_decrypter.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = aes_128_gcm_12_decrypter.cc; sourceTree = "<group>"; };
-		C6BB5B221F273751005006C4 /* common_cert_set_2b.inc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.pascal; path = common_cert_set_2b.inc; sourceTree = "<group>"; };
+		C6BB5B221F273751005006C4 /* common_cert_set_2b.inc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common_cert_set_2b.inc.h; sourceTree = "<group>"; };
 		C6BB5B231F273751005006C4 /* chacha20_poly1305_encrypter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = chacha20_poly1305_encrypter.h; sourceTree = "<group>"; };
 		C6BB5B241F273751005006C4 /* crypto_utils.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = crypto_utils.cc; sourceTree = "<group>"; };
 		C6BB5B251F273751005006C4 /* chacha20_poly1305_encrypter.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = chacha20_poly1305_encrypter.cc; sourceTree = "<group>"; };
 		C6BB5B261F273751005006C4 /* p256_key_exchange.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = p256_key_exchange.cc; sourceTree = "<group>"; };
 		C6BB5B271F273751005006C4 /* cert_compressor.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cert_compressor.cc; sourceTree = "<group>"; };
 		C6BB5B281F273751005006C4 /* aes_128_gcm_12_encrypter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = aes_128_gcm_12_encrypter.h; sourceTree = "<group>"; };
-		C6BB5B291F273751005006C4 /* common_cert_set_3b.inc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.pascal; path = common_cert_set_3b.inc; sourceTree = "<group>"; };
+		C6BB5B291F273751005006C4 /* common_cert_set_3b.inc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common_cert_set_3b.inc.h; sourceTree = "<group>"; };
 		C6BB5B2A1F273751005006C4 /* p256_key_exchange.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = p256_key_exchange.h; sourceTree = "<group>"; };
 		C6BB5B2B1F273751005006C4 /* common_cert_set.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = common_cert_set.cc; sourceTree = "<group>"; };
-		C6BB5B2C1F273751005006C4 /* common_cert_set_3a.inc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.pascal; path = common_cert_set_3a.inc; sourceTree = "<group>"; };
+		C6BB5B2C1F273751005006C4 /* common_cert_set_3a.inc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common_cert_set_3a.inc.h; sourceTree = "<group>"; };
 		C6BB5B2D1F273751005006C4 /* chacha20_poly1305_decrypter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = chacha20_poly1305_decrypter.h; sourceTree = "<group>"; };
 		C6BB5B2E1F273751005006C4 /* aead_base_encrypter.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = aead_base_encrypter.cc; sourceTree = "<group>"; };
 		C6BB5B2F1F273751005006C4 /* common_cert_set_3.c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common_cert_set_3.c.h; sourceTree = "<group>"; };
@@ -6723,7 +6642,7 @@
 				C66F73641F261886006EFCDD /* crl_set.cc */,
 				C66F73651F261886006EFCDD /* ct_log_response_parser.cc */,
 				C66F73671F261886006EFCDD /* crl_set_storage.cc */,
-				C66F73681F261886006EFCDD /* cert_verify_proc_blacklist.inc */,
+				C66F73681F261886006EFCDD /* cert_verify_proc_blacklist.inc.h */,
 				C66F73691F261886006EFCDD /* multi_log_ct_verifier.cc */,
 				C66F736A1F261886006EFCDD /* merkle_tree_leaf.cc */,
 				C66F736B1F261886006EFCDD /* ct_sct_to_string.h */,
@@ -7158,7 +7077,7 @@
 				C66F7C891F26188A006EFCDD /* bidirectional_stream_request_info.cc */,
 				C66F7C8A1F26188A006EFCDD /* http_response_headers.cc */,
 				C66F7C8C1F26188A006EFCDD /* http_cache_transaction.cc */,
-				C66F7C901F26188A006EFCDD /* transport_security_state_ct_policies.inc */,
+				C66F7C901F26188A006EFCDD /* transport_security_state_ct_policies.inc.h */,
 				C66F7C911F26188A006EFCDD /* failing_http_transaction_factory.cc */,
 				C66F7C941F26188A006EFCDD /* http_auth_handler.cc */,
 				C66F7C951F26188A006EFCDD /* http_cache.cc */,
@@ -7239,7 +7158,7 @@
 			isa = PBXGroup;
 			children = (
 				C66F7CF11F26188A006EFCDD /* http2_hpack_constants.cc */,
-				C66F7CF91F26188A006EFCDD /* hpack_static_table_entries.inc */,
+				C66F7CF91F26188A006EFCDD /* hpack_static_table_entries.inc.h */,
 				C66F7CFB1F26188A006EFCDD /* decoder */,
 				C66F7D291F26188A006EFCDD /* hpack_string.cc */,
 				C66F7D2A1F26188A006EFCDD /* huffman */,
@@ -8700,54 +8619,10 @@
 			isa = PBXGroup;
 			children = (
 				C66F91B41F2618D3006EFCDD /* err_data.c */,
-				C66F91FD1F2618D4006EFCDD /* mac-x86 */,
 				C66F92291F2618D4006EFCDD /* mac-x86_64 */,
 				C66F926B1F2618D4006EFCDD /* src */,
 			);
 			path = boringssl;
-			sourceTree = "<group>";
-		};
-		C66F91FD1F2618D4006EFCDD /* mac-x86 */ = {
-			isa = PBXGroup;
-			children = (
-				C66F91FE1F2618D4006EFCDD /* crypto */,
-			);
-			path = "mac-x86";
-			sourceTree = "<group>";
-		};
-		C66F91FE1F2618D4006EFCDD /* crypto */ = {
-			isa = PBXGroup;
-			children = (
-				C66F91FF1F2618D4006EFCDD /* chacha */,
-				C66F92011F2618D4006EFCDD /* fipsmodule */,
-			);
-			path = crypto;
-			sourceTree = "<group>";
-		};
-		C66F91FF1F2618D4006EFCDD /* chacha */ = {
-			isa = PBXGroup;
-			children = (
-				C66F92001F2618D4006EFCDD /* chacha-x86.S */,
-			);
-			path = chacha;
-			sourceTree = "<group>";
-		};
-		C66F92011F2618D4006EFCDD /* fipsmodule */ = {
-			isa = PBXGroup;
-			children = (
-				C66F92021F2618D4006EFCDD /* co-586.S */,
-				C66F92031F2618D4006EFCDD /* vpaes-x86.S */,
-				C66F92041F2618D4006EFCDD /* sha512-586.S */,
-				C66F92051F2618D4006EFCDD /* sha1-586.S */,
-				C66F92061F2618D4006EFCDD /* aesni-x86.S */,
-				C66F92071F2618D4006EFCDD /* md5-586.S */,
-				C66F92081F2618D4006EFCDD /* x86-mont.S */,
-				C66F92091F2618D4006EFCDD /* bn-586.S */,
-				C66F920A1F2618D4006EFCDD /* aes-586.S */,
-				C66F920B1F2618D4006EFCDD /* sha256-586.S */,
-				C66F920C1F2618D4006EFCDD /* ghash-x86.S */,
-			);
-			path = fipsmodule;
 			sourceTree = "<group>";
 		};
 		C66F92291F2618D4006EFCDD /* mac-x86_64 */ = {
@@ -9037,14 +8912,7 @@
 		C66F92A01F2618D4006EFCDD /* perlasm */ = {
 			isa = PBXGroup;
 			children = (
-				C66F92A11F2618D4006EFCDD /* x86_64-xlate.pl */,
-				C66F92A21F2618D4006EFCDD /* x86gas.pl */,
 				C66F92A31F2618D4006EFCDD /* readme */,
-				C66F92A41F2618D4006EFCDD /* x86nasm.pl */,
-				C66F92A51F2618D4006EFCDD /* arm-xlate.pl */,
-				C66F92A61F2618D4006EFCDD /* x86masm.pl */,
-				C66F92A71F2618D4006EFCDD /* ppc-xlate.pl */,
-				C66F92A81F2618D4006EFCDD /* x86asm.pl */,
 			);
 			path = perlasm;
 			sourceTree = "<group>";
@@ -9083,7 +8951,6 @@
 				C66F92C71F2618D4006EFCDD /* f_string.c */,
 				C66F92C81F2618D4006EFCDD /* asn1_lib.c */,
 				C66F92C91F2618D4006EFCDD /* a_utctm.c */,
-				C66F92CA1F2618D4006EFCDD /* charmap.pl */,
 				C66F92CB1F2618D4006EFCDD /* tasn_typ.c */,
 			);
 			path = asn1;
@@ -9186,10 +9053,6 @@
 		C66F93111F2618D4006EFCDD /* asm */ = {
 			isa = PBXGroup;
 			children = (
-				C66F93121F2618D4006EFCDD /* chacha-x86.pl */,
-				C66F93131F2618D4006EFCDD /* chacha-armv8.pl */,
-				C66F93141F2618D4006EFCDD /* chacha-x86_64.pl */,
-				C66F93151F2618D4006EFCDD /* chacha-armv4.pl */,
 			);
 			path = asm;
 			sourceTree = "<group>";
@@ -9312,8 +9175,6 @@
 		C66F934E1F2618D4006EFCDD /* asm */ = {
 			isa = PBXGroup;
 			children = (
-				C66F934F1F2618D4006EFCDD /* md5-586.pl */,
-				C66F93501F2618D4006EFCDD /* md5-x86_64.pl */,
 			);
 			path = asm;
 			sourceTree = "<group>";
@@ -9353,12 +9214,6 @@
 		C66F935D1F2618D4006EFCDD /* asm */ = {
 			isa = PBXGroup;
 			children = (
-				C66F935E1F2618D4006EFCDD /* ghashp8-ppc.pl */,
-				C66F935F1F2618D4006EFCDD /* ghashv8-armx.pl */,
-				C66F93601F2618D4006EFCDD /* ghash-x86.pl */,
-				C66F93611F2618D4006EFCDD /* aesni-gcm-x86_64.pl */,
-				C66F93621F2618D4006EFCDD /* ghash-x86_64.pl */,
-				C66F93631F2618D4006EFCDD /* ghash-armv4.pl */,
 			);
 			path = asm;
 			sourceTree = "<group>";
@@ -9410,7 +9265,6 @@
 		C66F937D1F2618D4006EFCDD /* asm */ = {
 			isa = PBXGroup;
 			children = (
-				C66F937E1F2618D4006EFCDD /* p256-x86_64-asm.pl */,
 			);
 			path = asm;
 			sourceTree = "<group>";
@@ -9458,15 +9312,7 @@
 		C66F939C1F2618D4006EFCDD /* asm */ = {
 			isa = PBXGroup;
 			children = (
-				C66F939D1F2618D4006EFCDD /* armv8-mont.pl */,
-				C66F939E1F2618D4006EFCDD /* rsaz-avx2.pl */,
-				C66F939F1F2618D4006EFCDD /* co-586.pl */,
-				C66F93A01F2618D4006EFCDD /* x86-mont.pl */,
 				C66F93A11F2618D4006EFCDD /* x86_64-gcc.c.h */,
-				C66F93A21F2618D4006EFCDD /* bn-586.pl */,
-				C66F93A31F2618D4006EFCDD /* x86_64-mont.pl */,
-				C66F93A41F2618D4006EFCDD /* x86_64-mont5.pl */,
-				C66F93A51F2618D4006EFCDD /* armv4-mont.pl */,
 			);
 			path = asm;
 			sourceTree = "<group>";
@@ -9486,16 +9332,6 @@
 		C66F93B81F2618D4006EFCDD /* asm */ = {
 			isa = PBXGroup;
 			children = (
-				C66F93B91F2618D4006EFCDD /* sha512-armv8.pl */,
-				C66F93BA1F2618D4006EFCDD /* sha512-x86_64.pl */,
-				C66F93BB1F2618D4006EFCDD /* sha256-586.pl */,
-				C66F93BC1F2618D4006EFCDD /* sha1-armv4-large.pl */,
-				C66F93BD1F2618D4006EFCDD /* sha512-586.pl */,
-				C66F93BE1F2618D4006EFCDD /* sha1-armv8.pl */,
-				C66F93BF1F2618D4006EFCDD /* sha256-armv4.pl */,
-				C66F93C01F2618D4006EFCDD /* sha512-armv4.pl */,
-				C66F93C11F2618D4006EFCDD /* sha1-x86_64.pl */,
-				C66F93C21F2618D4006EFCDD /* sha1-586.pl */,
 			);
 			path = asm;
 			sourceTree = "<group>";
@@ -9516,7 +9352,6 @@
 		C66F93CC1F2618D4006EFCDD /* asm */ = {
 			isa = PBXGroup;
 			children = (
-				C66F93CD1F2618D4006EFCDD /* rdrand-x86_64.pl */,
 			);
 			path = asm;
 			sourceTree = "<group>";
@@ -9536,17 +9371,6 @@
 		C66F93D51F2618D4006EFCDD /* asm */ = {
 			isa = PBXGroup;
 			children = (
-				C66F93D61F2618D4006EFCDD /* vpaes-x86_64.pl */,
-				C66F93D71F2618D4006EFCDD /* bsaes-x86_64.pl */,
-				C66F93D81F2618D4006EFCDD /* vpaes-x86.pl */,
-				C66F93D91F2618D4006EFCDD /* bsaes-armv7.pl */,
-				C66F93DA1F2618D4006EFCDD /* aes-armv4.pl */,
-				C66F93DB1F2618D4006EFCDD /* aesv8-armx.pl */,
-				C66F93DC1F2618D4006EFCDD /* aesni-x86_64.pl */,
-				C66F93DD1F2618D4006EFCDD /* aes-586.pl */,
-				C66F93DE1F2618D4006EFCDD /* aesni-x86.pl */,
-				C66F93DF1F2618D4006EFCDD /* aesp8-ppc.pl */,
-				C66F93E01F2618D4006EFCDD /* aes-x86_64.pl */,
 			);
 			path = asm;
 			sourceTree = "<group>";
@@ -9716,8 +9540,6 @@
 		C66F94561F2618D4006EFCDD /* asm */ = {
 			isa = PBXGroup;
 			children = (
-				C66F94571F2618D4006EFCDD /* aes128gcmsiv-x86_64.pl */,
-				C66F94581F2618D4006EFCDD /* chacha20_poly1305_x86_64.pl */,
 			);
 			path = asm;
 			sourceTree = "<group>";
@@ -9739,7 +9561,6 @@
 				C66F94901F2618D4006EFCDD /* CMakeLists.txt */,
 				C66F94911F2618D4006EFCDD /* poly1305_vec.c */,
 				C66F94921F2618D4006EFCDD /* poly1305_arm.c */,
-				C66F94931F2618D4006EFCDD /* poly1305_arm_asm.S */,
 				C66F94961F2618D4006EFCDD /* poly1305.c */,
 			);
 			path = poly1305;
@@ -9838,7 +9659,6 @@
 		C66F94CC1F2618D5006EFCDD /* asm */ = {
 			isa = PBXGroup;
 			children = (
-				C66F94CD1F2618D5006EFCDD /* x25519-asm-arm.S */,
 				C66F94CE1F2618D5006EFCDD /* x25519-asm-x86_64.S */,
 			);
 			path = asm;
@@ -10223,22 +10043,22 @@
 				C6BB5B1A1F273751005006C4 /* key_exchange.h */,
 				C6BB5B1B1F273751005006C4 /* quic_crypto_client_config.cc */,
 				C6BB5B1C1F273751005006C4 /* null_decrypter.cc */,
-				C6BB5B1D1F273751005006C4 /* common_cert_set_2a.inc */,
+				C6BB5B1D1F273751005006C4 /* common_cert_set_2a.inc.h */,
 				C6BB5B1E1F273751005006C4 /* curve25519_key_exchange.cc */,
 				C6BB5B1F1F273751005006C4 /* quic_encrypter.cc */,
 				C6BB5B201F273751005006C4 /* crypto_secret_boxer.cc */,
 				C6BB5B211F273751005006C4 /* aes_128_gcm_12_decrypter.cc */,
-				C6BB5B221F273751005006C4 /* common_cert_set_2b.inc */,
+				C6BB5B221F273751005006C4 /* common_cert_set_2b.inc.h */,
 				C6BB5B231F273751005006C4 /* chacha20_poly1305_encrypter.h */,
 				C6BB5B241F273751005006C4 /* crypto_utils.cc */,
 				C6BB5B251F273751005006C4 /* chacha20_poly1305_encrypter.cc */,
 				C6BB5B261F273751005006C4 /* p256_key_exchange.cc */,
 				C6BB5B271F273751005006C4 /* cert_compressor.cc */,
 				C6BB5B281F273751005006C4 /* aes_128_gcm_12_encrypter.h */,
-				C6BB5B291F273751005006C4 /* common_cert_set_3b.inc */,
+				C6BB5B291F273751005006C4 /* common_cert_set_3b.inc.h */,
 				C6BB5B2A1F273751005006C4 /* p256_key_exchange.h */,
 				C6BB5B2B1F273751005006C4 /* common_cert_set.cc */,
-				C6BB5B2C1F273751005006C4 /* common_cert_set_3a.inc */,
+				C6BB5B2C1F273751005006C4 /* common_cert_set_3a.inc.h */,
 				C6BB5B2D1F273751005006C4 /* chacha20_poly1305_decrypter.h */,
 				C6BB5B2E1F273751005006C4 /* aead_base_encrypter.cc */,
 				C6BB5B2F1F273751005006C4 /* common_cert_set_3.c.h */,
@@ -13566,8 +13386,6 @@
 				C6F706B51F260560005996DB /* thread_id_name_manager.cc in Sources */,
 				C66FA4291F2618F3006EFCDD /* a_bool.c in Sources */,
 				C66F89B91F261892006EFCDD /* http_auth_handler.cc in Sources */,
-				C66FA5611F2618F5006EFCDD /* x25519-asm-arm.S in Sources */,
-				C66FA3B41F2618F2006EFCDD /* aesni-x86.S in Sources */,
 				C66FA3FD1F2618F2006EFCDD /* base64_bio.c in Sources */,
 				C6F703E41F26055E005996DB /* close_nocancel.cc in Sources */,
 				C66FA41F1F2618F2006EFCDD /* time_support.c in Sources */,
@@ -13658,7 +13476,6 @@
 				C6BB5CCB1F2741A4005006C4 /* quic_packet_generator.cc in Sources */,
 				C66F72361F2616D3006EFCDD /* port_util.cc in Sources */,
 				C6BB5CC71F2741A4005006C4 /* quic_packet_creator.cc in Sources */,
-				C66FA3B81F2618F2006EFCDD /* aes-586.S in Sources */,
 				C6F704251F26055E005996DB /* shared_memory_handle_mac.cc in Sources */,
 				C66F89851F261892006EFCDD /* http_auth_handler_negotiate.cc in Sources */,
 				C6F707191F260560005996DB /* blame_context.cc in Sources */,
@@ -14003,7 +13820,6 @@
 				C66F90721F26189C006EFCDD /* url_fetcher_core.cc in Sources */,
 				C6F704C01F26055E005996DB /* native_library.cc in Sources */,
 				C66F8A0C1F261892006EFCDD /* random_util.cc in Sources */,
-				C66FA3B91F2618F2006EFCDD /* sha256-586.S in Sources */,
 				C66F71DA1F2616D3006EFCDD /* load_timing_info.cc in Sources */,
 				C66FA4E61F2618F4006EFCDD /* v3_extku.c in Sources */,
 				C6F707161F260560005996DB /* trace_log_constants.cc in Sources */,
@@ -14147,7 +13963,6 @@
 				C66F888D1F261891006EFCDD /* host_cache.cc in Sources */,
 				C66F89531F261892006EFCDD /* http_auth_handler_digest.cc in Sources */,
 				C66F90E81F26189D006EFCDD /* websocket_handshake_constants.cc in Sources */,
-				C66FA3B21F2618F2006EFCDD /* sha512-586.S in Sources */,
 				C66FA5001F2618F4006EFCDD /* x_x509.c in Sources */,
 				C6F707741F260560005996DB /* tracked_objects.cc in Sources */,
 				C66FA5121F2618F4006EFCDD /* a_verify.c in Sources */,
@@ -14182,7 +13997,6 @@
 				C6F706151F26055F005996DB /* initialization_util.cc in Sources */,
 				C66FA5051F2618F4006EFCDD /* x509_set.c in Sources */,
 				C66FA4421F2618F3006EFCDD /* cbs.c in Sources */,
-				C66FA3B31F2618F2006EFCDD /* sha1-586.S in Sources */,
 				C6BB5D9A1F274F76005006C4 /* cache_util_posix.cc in Sources */,
 				C66F88E51F261891006EFCDD /* code-patterns.md in Sources */,
 				C66F8DF51F261898006EFCDD /* udp_client_socket.cc in Sources */,
@@ -14198,7 +14012,6 @@
 				C6F705361F26055F005996DB /* port_provider_mac.cc in Sources */,
 				C6F706B11F260560005996DB /* thread_restrictions.cc in Sources */,
 				C66F8A721F261893006EFCDD /* rst_stream_payload_decoder.cc in Sources */,
-				C66FA3B01F2618F2006EFCDD /* co-586.S in Sources */,
 				C6F7F84D1F25F365005996DB /* Cronet.mm in Sources */,
 				C66F8F151F26189A006EFCDD /* default_channel_id_store.cc in Sources */,
 				C6F702CA1F26055E005996DB /* cpu.cc in Sources */,
@@ -14232,7 +14045,6 @@
 				C66F71DC1F2616D3006EFCDD /* logging_network_change_observer.cc in Sources */,
 				C66F917C1F2618AB006EFCDD /* signature_creator.cc in Sources */,
 				C66F8B751F261894006EFCDD /* proxy_info.cc in Sources */,
-				C66FA3AF1F2618F2006EFCDD /* chacha-x86.S in Sources */,
 				C66FA4BA1F2618F4006EFCDD /* FIPS.md in Sources */,
 				C6F707401F260560005996DB /* memory_dump_request_args.cc in Sources */,
 				C66FA4CE1F2618F4006EFCDD /* hkdf.c in Sources */,
@@ -14305,7 +14117,6 @@
 				C66FA49C1F2618F3006EFCDD /* e_aes.c.h in Sources */,
 				C66F886A1F261891006EFCDD /* in_flight_backend_io.cc in Sources */,
 				C66FA59D1F2618F6006EFCDD /* tls_record.cc in Sources */,
-				C66FA3B11F2618F2006EFCDD /* vpaes-x86.S in Sources */,
 				C6F7034D1F26055E005996DB /* file_util_mac.mm in Sources */,
 				C66F88851F261891006EFCDD /* mdns_client.cc in Sources */,
 				C66F872E1F26188F006EFCDD /* trust_store_in_memory.cc in Sources */,
@@ -14501,7 +14312,6 @@
 				C6F702FC1F26055E005996DB /* deferred_sequenced_task_runner.cc in Sources */,
 				C66FA4EF1F2618F4006EFCDD /* pcy_map.c in Sources */,
 				C66F8A731F261893006EFCDD /* continuation_payload_decoder.cc in Sources */,
-				C66FA53B1F2618F5006EFCDD /* poly1305_arm_asm.S in Sources */,
 				C6F7F91B1F25FA3C005996DB /* url_canon_icu_alternatives_ios.mm in Sources */,
 				C66F917A1F2618AB006EFCDD /* encryptor.cc in Sources */,
 				C6F705811F26055F005996DB /* nullable_string16.cc in Sources */,
@@ -14543,7 +14353,7 @@
 				C66F8F2F1F26189A006EFCDD /* ssl_info.cc in Sources */,
 				C6BB5DD11F275296005006C4 /* read_write_lock_posix.cc in Sources */,
 				C66F87161F26188F006EFCDD /* test_root_certs.cc in Sources */,
-				C66F8A151F261892006EFCDD /* hpack_static_table_entries.inc in Sources */,
+				C66F8A151F261892006EFCDD /* hpack_static_table_entries.inc.h in Sources */,
 				C66F8EF91F261899006EFCDD /* spdy_flags.cc in Sources */,
 				C66FA59E1F2618F6006EFCDD /* ssl_privkey.cc in Sources */,
 				C6F704511F26055E005996DB /* aligned_memory.cc in Sources */,
@@ -14605,7 +14415,6 @@
 				C66F88261F261891006EFCDD /* simple_index.cc in Sources */,
 				C66F916C1F2618AB006EFCDD /* ec_private_key.cc in Sources */,
 				C6F706441F26055F005996DB /* dtoa.cc.h in Sources */,
-				C66FA3B61F2618F2006EFCDD /* x86-mont.S in Sources */,
 				C66F880A1F261890006EFCDD /* parser.cc in Sources */,
 				C6BB5CB21F27419F005006C4 /* quic_ack_listener_interface.cc in Sources */,
 				C66F8F4A1F26189A006EFCDD /* token_binding.cc in Sources */,
@@ -14684,7 +14493,7 @@
 				C66FA3D41F2618F2006EFCDD /* ghash-x86_64.S in Sources */,
 				C6F7031F1F26055E005996DB /* file_enumerator.cc in Sources */,
 				C6BB5CC81F2741A4005006C4 /* quic_versions.cc in Sources */,
-				C66F89B51F261892006EFCDD /* transport_security_state_ct_policies.inc in Sources */,
+				C66F89B51F261892006EFCDD /* transport_security_state_ct_policies.inc.h in Sources */,
 				C66FA59A1F2618F6006EFCDD /* dtls_record.cc in Sources */,
 				C6F706F21F260560005996DB /* time.cc in Sources */,
 				C6F706031F26055F005996DB /* scheduler_single_thread_task_runner_manager.cc in Sources */,
@@ -14758,7 +14567,7 @@
 				C66F8A3C1F261892006EFCDD /* hpack_block_decoder.cc in Sources */,
 				C6F7073A1F260560005996DB /* trace_buffer.cc in Sources */,
 				C66FA5641F2618F5006EFCDD /* x25519-x86_64.c in Sources */,
-				C66F87C81F261890006EFCDD /* cert_verify_proc_blacklist.inc in Sources */,
+				C66F87C81F261890006EFCDD /* cert_verify_proc_blacklist.inc.h in Sources */,
 				C6F705031F26055E005996DB /* power_monitor.cc in Sources */,
 				C66F91991F2618AB006EFCDD /* secure_hash.cc in Sources */,
 				C66FA5221F2618F5006EFCDD /* x509_r2x.c in Sources */,
@@ -14772,7 +14581,6 @@
 				C66F90FC1F26189D006EFCDD /* websocket_stream.cc in Sources */,
 				C6BB5CEF1F2741BE005006C4 /* crypto_framer.cc in Sources */,
 				C66FA5031F2618F4006EFCDD /* a_digest.c in Sources */,
-				C66FA3BA1F2618F2006EFCDD /* ghash-x86.S in Sources */,
 				C66FA4A81F2618F4006EFCDD /* jacobi.c.h in Sources */,
 				C6F703D11F26055E005996DB /* sdk_forward_declarations.mm in Sources */,
 				C6BB5DEE1F275544005006C4 /* thread_local_storage_posix.cc in Sources */,
@@ -14839,10 +14647,8 @@
 				C66F8B051F261893006EFCDD /* multi_threaded_proxy_resolver.cc in Sources */,
 				C6F704831F26055E005996DB /* histogram_snapshot_manager.cc in Sources */,
 				C6F704171F26055E005996DB /* ref_counted.cc in Sources */,
-				C66FA3B51F2618F2006EFCDD /* md5-586.S in Sources */,
 				C66F88E01F261891006EFCDD /* bug-triage-labels.md in Sources */,
 				C66FA4C91F2618F4006EFCDD /* forkunsafe.c in Sources */,
-				C66FA3B71F2618F2006EFCDD /* bn-586.S in Sources */,
 				C6BB5DB81F275144005006C4 /* rand_util_posix.cc in Sources */,
 				C66FA54D1F2618F5006EFCDD /* p_ec.c in Sources */,
 				C66F884A1F261891006EFCDD /* entry_impl.cc in Sources */,

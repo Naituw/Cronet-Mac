@@ -18,7 +18,7 @@ std::vector<HpackStringPair>* MakeStaticTable() {
   DCHECK_EQ(ptr->size(), index);               \
   ptr->emplace_back(name, value)
 
-#include "net/http2/hpack/hpack_static_table_entries.inc"
+#include "net/http2/hpack/hpack_static_table_entries.inc.h"
 
 #undef STATIC_TABLE_ENTRY
 

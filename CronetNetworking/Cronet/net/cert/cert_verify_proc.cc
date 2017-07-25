@@ -693,7 +693,7 @@ bool CertVerifyProc::IsBlacklisted(X509Certificate* cert) {
 bool CertVerifyProc::IsPublicKeyBlacklisted(
     const HashValueVector& public_key_hashes) {
 // Defines kBlacklistedSPKIs.
-#include "net/cert/cert_verify_proc_blacklist.inc"
+#include "net/cert/cert_verify_proc_blacklist.inc.h"
   for (const auto& hash : public_key_hashes) {
     if (hash.tag != HASH_VALUE_SHA256)
       continue;
