@@ -37,7 +37,9 @@
 #include "net/http/transport_security_state.h"
 #include "net/net_features.h"
 #include "net/nqe/network_quality_estimator.h"
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/chromium/quic_stream_factory.h"
+#endif
 #include "net/ssl/channel_id_service.h"
 #include "net/ssl/default_channel_id_store.h"
 #include "net/ssl/ssl_config_service_defaults.h"
@@ -272,7 +274,9 @@ void URLRequestContextBuilder::DisableHttpCache() {
 void URLRequestContextBuilder::SetSpdyAndQuicEnabled(bool spdy_enabled,
                                                      bool quic_enabled) {
   http_network_session_params_.enable_http2 = spdy_enabled;
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   http_network_session_params_.enable_quic = quic_enabled;
+#endif
 }
 
 void URLRequestContextBuilder::set_ct_verifier(

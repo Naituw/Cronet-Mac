@@ -162,7 +162,9 @@ HttpStreamFactoryImpl::Job::Job(Delegate* delegate,
                                 HostPortPair destination,
                                 GURL origin_url,
                                 NextProto alternative_protocol,
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
                                 QuicVersion quic_version,
+#endif
                                 const ProxyServer& alternative_proxy_server,
                                 bool enable_ip_based_pooling,
                                 NetLog* net_log)
@@ -189,11 +191,15 @@ HttpStreamFactoryImpl::Job::Job(Delegate* delegate,
       using_quic_(
           alternative_protocol == kProtoQUIC ||
           ShouldForceQuic(session, destination, origin_url, proxy_info)),
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
       quic_version_(quic_version),
+#endif
       expect_spdy_(alternative_protocol == kProtoHTTP2 && !using_quic_),
       using_spdy_(false),
       should_reconsider_proxy_(false),
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
       quic_request_(session_->quic_stream_factory()),
+#endif
       using_existing_quic_session_(false),
       establishing_tunnel_(false),
       was_alpn_negotiated_(false),
@@ -210,6 +216,7 @@ HttpStreamFactoryImpl::Job::Job(Delegate* delegate,
       stream_type_(HttpStreamRequest::BIDIRECTIONAL_STREAM),
       init_connection_already_resumed_(false),
       ptr_factory_(this) {
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   // The Job is forced to use QUIC without a designated version, try the
   // preferred QUIC version that is supported by default.
   if (quic_version_ == QUIC_VERSION_UNSUPPORTED &&
@@ -219,7 +226,8 @@ HttpStreamFactoryImpl::Job::Job(Delegate* delegate,
 
   if (using_quic_)
     DCHECK_NE(quic_version_, QUIC_VERSION_UNSUPPORTED);
-
+#endif
+          
   DCHECK(session);
   if (alternative_protocol != kProtoUnknown) {
     // The job cannot have protocol requirements dictated by alternative service
@@ -398,11 +406,15 @@ bool HttpStreamFactoryImpl::Job::ShouldForceQuic(
     return false;
   if (proxy_info.is_quic())
     return true;
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   return (base::ContainsKey(session->params().origins_to_force_quic_on,
                             HostPortPair()) ||
           base::ContainsKey(session->params().origins_to_force_quic_on,
                             destination)) &&
          proxy_info.is_direct() && origin_url.SchemeIs(url::kHttpsScheme);
+#else
+  return false;
+#endif
 }
 
 // static
@@ -910,6 +922,7 @@ int HttpStreamFactoryImpl::Job::DoInitConnectionImpl() {
       destination = destination_;
       ssl_config = &server_ssl_config_;
     }
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     int rv = quic_request_.Request(
         destination, quic_version_, request_info_.privacy_mode,
         ssl_config->GetCertVerifyFlags(), url, request_info_.method, net_log_,
@@ -925,6 +938,9 @@ int HttpStreamFactoryImpl::Job::DoInitConnectionImpl() {
       }
     }
     return rv;
+#else
+      return 0;
+#endif
   }
 
   // Check first if we have a spdy session for this group.  If so, then go
@@ -1086,14 +1102,22 @@ int HttpStreamFactoryImpl::Job::DoInitConnectionComplete(int result) {
       return result;
 
     if (stream_type_ == HttpStreamRequest::BIDIRECTIONAL_STREAM) {
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
       bidirectional_stream_impl_ =
           quic_request_.CreateBidirectionalStreamImpl();
+#else
+        bidirectional_stream_impl_ = NULL;
+#endif
       if (!bidirectional_stream_impl_) {
         // Quic session is closed before stream can be created.
         return ERR_CONNECTION_CLOSED;
       }
     } else {
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
       stream_ = quic_request_.CreateStream();
+#else
+        stream_ = NULL;
+#endif
       if (!stream_) {
         // Quic session is closed before stream can be created.
         return ERR_CONNECTION_CLOSED;
@@ -1478,7 +1502,11 @@ HttpStreamFactoryImpl::JobFactory::CreateMainJob(
   return base::MakeUnique<HttpStreamFactoryImpl::Job>(
       delegate, job_type, session, request_info, priority, proxy_info,
       server_ssl_config, proxy_ssl_config, destination, origin_url,
-      kProtoUnknown, QUIC_VERSION_UNSUPPORTED, ProxyServer(),
+      kProtoUnknown,
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+                                                      QUIC_VERSION_UNSUPPORTED,
+#endif
+                                                      ProxyServer(),
       enable_ip_based_pooling, net_log);
 }
 
@@ -1495,13 +1523,19 @@ HttpStreamFactoryImpl::JobFactory::CreateAltSvcJob(
     HostPortPair destination,
     GURL origin_url,
     NextProto alternative_protocol,
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     QuicVersion quic_version,
+#endif
     bool enable_ip_based_pooling,
     NetLog* net_log) {
   return base::MakeUnique<HttpStreamFactoryImpl::Job>(
       delegate, job_type, session, request_info, priority, proxy_info,
       server_ssl_config, proxy_ssl_config, destination, origin_url,
-      alternative_protocol, quic_version, ProxyServer(),
+      alternative_protocol,
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+                                                      quic_version,
+#endif
+                                                      ProxyServer(),
       enable_ip_based_pooling, net_log);
 }
 
@@ -1523,7 +1557,11 @@ HttpStreamFactoryImpl::JobFactory::CreateAltProxyJob(
   return base::MakeUnique<HttpStreamFactoryImpl::Job>(
       delegate, job_type, session, request_info, priority, proxy_info,
       server_ssl_config, proxy_ssl_config, destination, origin_url,
-      kProtoUnknown, QUIC_VERSION_UNSUPPORTED, alternative_proxy_server,
+      kProtoUnknown,
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+                                                      QUIC_VERSION_UNSUPPORTED,
+#endif
+                                                      alternative_proxy_server,
       enable_ip_based_pooling, net_log);
 }
 

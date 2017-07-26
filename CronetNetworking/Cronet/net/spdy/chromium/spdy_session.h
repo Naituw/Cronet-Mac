@@ -19,6 +19,7 @@
 #include "base/memory/ref_counted.h"
 #include "base/memory/weak_ptr.h"
 #include "base/time/time.h"
+#include "net/net_features.h"
 #include "net/base/host_port_pair.h"
 #include "net/base/io_buffer.h"
 #include "net/base/load_states.h"
@@ -302,7 +303,9 @@ class NET_EXPORT SpdySession : public BufferedSpdyFramerVisitorInterface,
   SpdySession(const SpdySessionKey& spdy_session_key,
               HttpServerProperties* http_server_properties,
               TransportSecurityState* transport_security_state,
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
               const QuicVersionVector& quic_supported_versions,
+#endif
               bool enable_sending_initial_data,
               bool enable_ping_based_connection_checking,
               size_t session_max_recv_window_size,
@@ -1178,9 +1181,11 @@ class NET_EXPORT SpdySession : public BufferedSpdyFramerVisitorInterface,
 
   NetLogWithSource net_log_;
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   // Versions of QUIC which may be used.
   const QuicVersionVector quic_supported_versions_;
-
+#endif
+                                   
   // Outside of tests, these should always be true.
   bool enable_sending_initial_data_;
   bool enable_ping_based_connection_checking_;

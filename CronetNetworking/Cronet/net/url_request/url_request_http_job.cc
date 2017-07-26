@@ -36,6 +36,7 @@
 #include "net/base/sdch_problem_codes.h"
 #include "net/base/trace_constants.h"
 #include "net/base/url_util.h"
+#include "net/base/upload_data_stream.h"
 #include "net/cert/cert_status_flags.h"
 #include "net/cookies/cookie_store.h"
 #include "net/filter/brotli_source_stream.h"

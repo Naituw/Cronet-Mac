@@ -23,7 +23,9 @@
 #include "net/log/net_log_with_source.h"
 #include "net/proxy/proxy_server.h"
 #include "net/proxy/proxy_service.h"
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/chromium/quic_stream_factory.h"
+#endif
 #include "net/socket/client_socket_handle.h"
 #include "net/socket/client_socket_pool_manager.h"
 #include "net/socket/next_proto.h"
@@ -190,7 +192,9 @@ class HttpStreamFactoryImpl::Job {
       HostPortPair destination,
       GURL origin_url,
       NextProto alternative_protocol,
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
       QuicVersion quic_version,
+#endif
       const ProxyServer& alternative_proxy_server,
       bool enable_ip_based_pooling,
       NetLog* net_log);
@@ -446,10 +450,12 @@ class HttpStreamFactoryImpl::Job {
   // True if Job uses QUIC.
   const bool using_quic_;
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   // QuicVersion that should be used to connect to the QUIC server if Job uses
   // QUIC.
   QuicVersion quic_version_;
-
+#endif
+    
   // True if Alternative Service protocol field requires that HTTP/2 is used.
   // In this case, Job fails if it cannot pool to an existing SpdySession and
   // the server does not negotiate HTTP/2 on a new socket.
@@ -461,8 +467,10 @@ class HttpStreamFactoryImpl::Job {
   // True if this job might succeed with a different proxy config.
   bool should_reconsider_proxy_;
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   QuicStreamRequest quic_request_;
-
+#endif
+    
   // True if this job used an existing QUIC session.
   bool using_existing_quic_session_;
 
@@ -541,7 +549,9 @@ class HttpStreamFactoryImpl::JobFactory {
       HostPortPair destination,
       GURL origin_url,
       NextProto alternative_protocol,
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
       QuicVersion quic_version,
+#endif
       bool enable_ip_based_pooling,
       NetLog* net_log);
 

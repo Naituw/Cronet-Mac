@@ -23,7 +23,9 @@
 #include "net/http/http_stream_factory_impl_request.h"
 #include "net/http/transport_security_state.h"
 #include "net/proxy/proxy_info.h"
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/core/quic_server_id.h"
+#endif
 #include "net/spdy/chromium/bidirectional_stream_spdy_impl.h"
 #include "net/spdy/chromium/spdy_http_stream.h"
 #include "url/gurl.h"

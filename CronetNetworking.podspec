@@ -18,9 +18,12 @@ Pod::Spec.new do |s|
   s.libraries  = ['bsm', 'resolv', 'z', 'c++']
 
   non_arc_files = ['CronetNetworking/Cronet/base/**/*.{m,mm}']
+  exclude_files = non_arc_files
+
+  exclude_files += ['CronetNetworking/Cronet/net/{quic,websocket,sdch}/**/*']
 
   s.source_files = ['CronetNetworking/Cronet/**/*.{h,m,mm,c,cc,S}']
-  s.exclude_files = non_arc_files
+  s.exclude_files = exclude_files
   s.header_mappings_dir = 'CronetNetworking/Cronet'
 
   s.subspec 'no-arc' do |sp|

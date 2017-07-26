@@ -28,8 +28,10 @@
 #include "net/http/http_network_session.h"
 #include "net/http/http_server_properties.h"
 #include "net/nqe/network_quality_estimator_params.h"
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/chromium/quic_utils_chromium.h"
 #include "net/quic/core/quic_packets.h"
+#endif
 #include "net/socket/ssl_client_socket.h"
 #include "net/url_request/url_request_context_builder.h"
 
@@ -219,6 +221,7 @@ void URLRequestContextConfig::ParseAndSetExperimentalOptions(
         effective_experimental_options->Remove(it.key(), nullptr);
         continue;
       }
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
       std::string quic_connection_options;
       if (quic_args->GetString(kQuicConnectionOptions,
                                &quic_connection_options)) {
@@ -289,6 +292,7 @@ void URLRequestContextConfig::ParseAndSetExperimentalOptions(
         session_params->quic_race_cert_verification =
             quic_race_cert_verification;
       }
+#endif
 
     } else if (it.key() == kAsyncDnsFieldTrialName) {
       const base::DictionaryValue* async_dns_args = nullptr;
@@ -457,10 +461,12 @@ void URLRequestContextConfig::ConfigureURLRequestContextBuilder(
   context_builder->set_sdch_enabled(enable_sdch);
   net::HttpNetworkSession::Params session_params;
   session_params.enable_http2 = enable_spdy;
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   session_params.enable_quic = enable_quic;
   if (enable_quic)
     session_params.quic_user_agent_id = quic_user_agent_id;
-
+#endif
+    
   ParseAndSetExperimentalOptions(context_builder, &session_params, net_log,
                                  file_task_runner);
   context_builder->set_http_network_session_params(session_params);

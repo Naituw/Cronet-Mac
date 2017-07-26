@@ -722,7 +722,9 @@ bool SpdySession::CanPool(TransportSecurityState* transport_security_state,
 SpdySession::SpdySession(const SpdySessionKey& spdy_session_key,
                          HttpServerProperties* http_server_properties,
                          TransportSecurityState* transport_security_state,
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
                          const QuicVersionVector& quic_supported_versions,
+#endif
                          bool enable_sending_initial_data,
                          bool enable_ping_based_connection_checking,
                          size_t session_max_recv_window_size,
@@ -773,7 +775,9 @@ SpdySession::SpdySession(const SpdySessionKey& spdy_session_key,
           initial_settings.at(SETTINGS_INITIAL_WINDOW_SIZE)),
       net_log_(
           NetLogWithSource::Make(net_log, NetLogSourceType::HTTP2_SESSION)),
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
       quic_supported_versions_(quic_supported_versions),
+#endif
       enable_sending_initial_data_(enable_sending_initial_data),
       enable_ping_based_connection_checking_(
           enable_ping_based_connection_checking),
@@ -2993,6 +2997,7 @@ void SpdySession::OnAltSvc(
 
   AlternativeServiceInfoVector alternative_service_info_vector;
   alternative_service_info_vector.reserve(altsvc_vector.size());
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   const base::Time now(base::Time::Now());
   DCHECK(!quic_supported_versions_.empty());
   for (const SpdyAltSvcWireFormat::AlternativeService& altsvc : altsvc_vector) {
@@ -3037,6 +3042,7 @@ void SpdySession::OnAltSvc(
     }
     alternative_service_info_vector.push_back(alternative_service_info);
   }
+#endif
 
   http_server_properties_->SetAlternativeServices(
       scheme_host_port, alternative_service_info_vector);

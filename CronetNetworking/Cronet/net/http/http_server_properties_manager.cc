@@ -16,7 +16,10 @@
 #include "base/values.h"
 #include "net/base/ip_address.h"
 #include "net/base/port_util.h"
+#include "net/http/http_server_properties_impl.h"
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/platform/api/quic_hostname_utils.h"
+#endif
 #include "url/gurl.h"
 
 namespace net {
@@ -261,6 +264,8 @@ bool HttpServerPropertiesManager::SetHttp2AlternativeService(
   return changed;
 }
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+
 bool HttpServerPropertiesManager::SetQuicAlternativeService(
     const url::SchemeHostPort& origin,
     const AlternativeService& alternative_service,
@@ -274,6 +279,7 @@ bool HttpServerPropertiesManager::SetQuicAlternativeService(
   }
   return changed;
 }
+#endif
 
 bool HttpServerPropertiesManager::SetAlternativeServices(
     const url::SchemeHostPort& origin,
@@ -361,6 +367,8 @@ void HttpServerPropertiesManager::SetSupportsQuic(bool used_quic,
   if (old_last_quic_addr != new_last_quic_addr)
     ScheduleUpdatePrefsOnNetworkSequence(SET_SUPPORTS_QUIC);
 }
+    
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 
 void HttpServerPropertiesManager::SetServerNetworkStats(
     const url::SchemeHostPort& server,
@@ -437,6 +445,8 @@ void HttpServerPropertiesManager::SetMaxServerConfigsStoredInProperties(
       max_server_configs_stored_in_properties);
 }
 
+#endif
+    
 bool HttpServerPropertiesManager::IsInitialized() const {
   DCHECK(network_task_runner_->RunsTasksInCurrentSequence());
 
@@ -548,15 +558,20 @@ void HttpServerPropertiesManager::UpdateCacheFromPrefsOnPrefSequence() {
       new SpdyServersMap(SpdyServersMap::NO_AUTO_EVICT));
   std::unique_ptr<AlternativeServiceMap> alternative_service_map(
       new AlternativeServiceMap(kMaxAlternateProtocolHostsToPersist));
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   std::unique_ptr<ServerNetworkStatsMap> server_network_stats_map(
       new ServerNetworkStatsMap(kMaxServerNetworkStatsHostsToPersist));
   std::unique_ptr<QuicServerInfoMap> quic_server_info_map(
       new QuicServerInfoMap(QuicServerInfoMap::NO_AUTO_EVICT));
-
+#endif
+    
   if (version < 4) {
     if (!AddServersData(*servers_dict, spdy_servers_map.get(),
                         alternative_service_map.get(),
-                        server_network_stats_map.get(), version)) {
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+                        server_network_stats_map.get(),
+#endif
+                        version)) {
       detected_corrupted_prefs = true;
     }
   } else {
@@ -573,16 +588,21 @@ void HttpServerPropertiesManager::UpdateCacheFromPrefsOnPrefSequence() {
       }
       if (!AddServersData(*servers_dict, spdy_servers_map.get(),
                           alternative_service_map.get(),
-                          server_network_stats_map.get(), version)) {
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+                          server_network_stats_map.get(),
+#endif
+                          version)) {
         detected_corrupted_prefs = true;
       }
     }
   }
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   if (!AddToQuicServerInfoMap(http_server_properties_dict,
                               quic_server_info_map.get())) {
     detected_corrupted_prefs = true;
   }
+#endif
 
   // Read list containing broken and recently-broken alternative services, if
   // it exists.
@@ -623,8 +643,10 @@ void HttpServerPropertiesManager::UpdateCacheFromPrefsOnPrefSequence() {
           &HttpServerPropertiesManager::UpdateCacheFromPrefsOnNetworkSequence,
           base::Unretained(this), base::Passed(&spdy_servers_map),
           base::Passed(&alternative_service_map), base::Passed(&addr),
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
           base::Passed(&server_network_stats_map),
           base::Passed(&quic_server_info_map),
+#endif
           base::Passed(&broken_alternative_service_list),
           base::Passed(&recently_broken_alternative_services),
           detected_corrupted_prefs));
@@ -685,7 +707,9 @@ bool HttpServerPropertiesManager::AddServersData(
     const base::DictionaryValue& servers_dict,
     SpdyServersMap* spdy_servers_map,
     AlternativeServiceMap* alternative_service_map,
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     ServerNetworkStatsMap* network_stats_map,
+#endif
     int version) {
   for (base::DictionaryValue::Iterator it(servers_dict); !it.IsAtEnd();
        it.Advance()) {
@@ -716,9 +740,11 @@ bool HttpServerPropertiesManager::AddServersData(
     }
 
     if (!AddToAlternativeServiceMap(spdy_server, *server_pref_dict,
-                                    alternative_service_map) ||
-        !AddToNetworkStatsMap(spdy_server, *server_pref_dict,
-                              network_stats_map)) {
+                                    alternative_service_map)
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+        || !AddToNetworkStatsMap(spdy_server, *server_pref_dict, network_stats_map)
+#endif
+        ) {
       return false;
     }
   }
@@ -806,6 +832,7 @@ bool HttpServerPropertiesManager::ParseAlternativeServiceInfoDictOfServer(
     }
   }
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   // Advertised versions list is optional.
   if (dict.HasKey(kAdvertisedVersionsKey)) {
     const base::ListValue* versions_list = nullptr;
@@ -827,6 +854,7 @@ bool HttpServerPropertiesManager::ParseAlternativeServiceInfoDictOfServer(
     }
     alternative_service_info->set_advertised_versions(advertised_versions);
   }
+#endif
 
   return true;
 }
@@ -898,6 +926,8 @@ bool HttpServerPropertiesManager::ReadSupportsQuic(
   return true;
 }
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+
 bool HttpServerPropertiesManager::AddToNetworkStatsMap(
     const url::SchemeHostPort& server,
     const base::DictionaryValue& server_pref_dict,
@@ -968,13 +998,16 @@ bool HttpServerPropertiesManager::AddToQuicServerInfoMap(
   }
   return !detected_corrupted_prefs;
 }
+#endif
 
 void HttpServerPropertiesManager::UpdateCacheFromPrefsOnNetworkSequence(
     std::unique_ptr<SpdyServersMap> spdy_servers_map,
     std::unique_ptr<AlternativeServiceMap> alternative_service_map,
     std::unique_ptr<IPAddress> last_quic_address,
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     std::unique_ptr<ServerNetworkStatsMap> server_network_stats_map,
     std::unique_ptr<QuicServerInfoMap> quic_server_info_map,
+#endif
     std::unique_ptr<BrokenAlternativeServiceList>
         broken_alternative_service_list,
     std::unique_ptr<RecentlyBrokenAlternativeServices>
@@ -994,16 +1027,18 @@ void HttpServerPropertiesManager::UpdateCacheFromPrefsOnNetworkSequence(
   http_server_properties_impl_->SetAlternativeServiceServers(
       std::move(alternative_service_map));
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   http_server_properties_impl_->SetSupportsQuic(*last_quic_address);
 
   http_server_properties_impl_->SetServerNetworkStats(
       std::move(server_network_stats_map));
-
+    
   UMA_HISTOGRAM_COUNTS_1000("Net.CountOfQuicServerInfos",
                             quic_server_info_map->size());
 
   http_server_properties_impl_->SetQuicServerInfoMap(
       std::move(quic_server_info_map));
+#endif
 
   if (recently_broken_alternative_services) {
     DCHECK(broken_alternative_service_list);
@@ -1103,6 +1138,7 @@ void HttpServerPropertiesManager::UpdatePrefsFromCacheOnNetworkSequence(
     ++count;
   }
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   std::unique_ptr<ServerNetworkStatsMap> server_network_stats_map =
       base::MakeUnique<ServerNetworkStatsMap>(
           kMaxServerNetworkStatsHostsToPersist);
@@ -1129,6 +1165,7 @@ void HttpServerPropertiesManager::UpdatePrefsFromCacheOnNetworkSequence(
       quic_server_info_map->Put(it->first, it->second);
     }
   }
+#endif
 
   std::unique_ptr<BrokenAlternativeServiceList> broken_alt_svc_list;
   const BrokenAlternativeServiceList& broken_alternative_service_list =
@@ -1170,9 +1207,11 @@ void HttpServerPropertiesManager::UpdatePrefsFromCacheOnNetworkSequence(
       base::Bind(&HttpServerPropertiesManager::UpdatePrefsOnPrefThread,
                  pref_weak_ptr_, base::Passed(&spdy_servers),
                  base::Passed(&alternative_service_map),
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
                  base::Passed(&last_quic_addr),
                  base::Passed(&server_network_stats_map),
                  base::Passed(&quic_server_info_map),
+#endif
                  base::Passed(&broken_alt_svc_list),
                  base::Passed(&recently_broken_alt_svcs), completion));
 }
@@ -1182,17 +1221,21 @@ void HttpServerPropertiesManager::UpdatePrefsFromCacheOnNetworkSequence(
 struct ServerPref {
   bool supports_spdy = false;
   const AlternativeServiceInfoVector* alternative_service_info_vector = nullptr;
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   const SupportsQuic* supports_quic = nullptr;
   const ServerNetworkStats* server_network_stats = nullptr;
+#endif
 };
 
 // All maps and lists are in MRU order.
 void HttpServerPropertiesManager::UpdatePrefsOnPrefThread(
     std::unique_ptr<std::vector<std::string>> spdy_servers,
     std::unique_ptr<AlternativeServiceMap> alternative_service_map,
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     std::unique_ptr<IPAddress> last_quic_address,
     std::unique_ptr<ServerNetworkStatsMap> server_network_stats_map,
     std::unique_ptr<QuicServerInfoMap> quic_server_info_map,
+#endif
     std::unique_ptr<BrokenAlternativeServiceList>
         broken_alternative_service_list,
     std::unique_ptr<RecentlyBrokenAlternativeServices>
@@ -1233,6 +1276,7 @@ void HttpServerPropertiesManager::UpdatePrefsOnPrefThread(
     }
   }
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   // Add ServerNetworkStats servers to server_pref_map in the MRU order.
   DCHECK(server_network_stats_map);
   for (ServerNetworkStatsMap::const_reverse_iterator map_it =
@@ -1248,6 +1292,7 @@ void HttpServerPropertiesManager::UpdatePrefsOnPrefThread(
       it->second.server_network_stats = &map_it->second;
     }
   }
+#endif
 
   // Persist properties to the prefs in the MRU order.
   base::DictionaryValue http_server_properties_dict;
@@ -1268,10 +1313,12 @@ void HttpServerPropertiesManager::UpdatePrefsOnPrefThread(
       SaveAlternativeServiceToServerPrefs(
           *server_pref.alternative_service_info_vector, server_pref_dict.get());
     }
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     if (server_pref.server_network_stats) {
       SaveNetworkStatsToServerPrefs(*server_pref.server_network_stats,
                                     server_pref_dict.get());
     }
+#endif
 
     servers_dict->SetWithoutPathExpansion(server.Serialize(),
                                           std::move(server_pref_dict));
@@ -1283,6 +1330,7 @@ void HttpServerPropertiesManager::UpdatePrefsOnPrefThread(
                                                       std::move(servers_list));
   SetVersion(&http_server_properties_dict, kVersionNumber);
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   DCHECK(last_quic_address);
   SaveSupportsQuicToPrefs(*last_quic_address, &http_server_properties_dict);
 
@@ -1290,6 +1338,7 @@ void HttpServerPropertiesManager::UpdatePrefsOnPrefThread(
     SaveQuicServerInfoMapToServerPrefs(*quic_server_info_map,
                                        &http_server_properties_dict);
   }
+#endif
 
   SaveBrokenAlternativeServicesToPrefs(
       broken_alternative_service_list.get(),
@@ -1331,6 +1380,7 @@ void HttpServerPropertiesManager::SaveAlternativeServiceToServerPrefs(
         kExpirationKey,
         base::Int64ToString(
             alternative_service_info.expiration().ToInternalValue()));
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     std::unique_ptr<base::ListValue> advertised_versions_list =
         base::MakeUnique<base::ListValue>();
     for (const auto& version : alternative_service_info.advertised_versions()) {
@@ -1338,6 +1388,7 @@ void HttpServerPropertiesManager::SaveAlternativeServiceToServerPrefs(
     }
     alternative_service_dict->SetList(kAdvertisedVersionsKey,
                                       std::move(advertised_versions_list));
+#endif
     alternative_service_list->Append(std::move(alternative_service_dict));
   }
   if (alternative_service_list->GetSize() == 0)
@@ -1346,6 +1397,7 @@ void HttpServerPropertiesManager::SaveAlternativeServiceToServerPrefs(
       kAlternativeServiceKey, std::move(alternative_service_list));
 }
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 void HttpServerPropertiesManager::SaveSupportsQuicToPrefs(
     const IPAddress& last_quic_address,
     base::DictionaryValue* http_server_properties_dict) {
@@ -1389,6 +1441,7 @@ void HttpServerPropertiesManager::SaveQuicServerInfoMapToServerPrefs(
   http_server_properties_dict->SetWithoutPathExpansion(
       kQuicServers, std::move(quic_servers_dict));
 }
+#endif
 
 void HttpServerPropertiesManager::SaveBrokenAlternativeServicesToPrefs(
     const BrokenAlternativeServiceList* broken_alternative_service_list,

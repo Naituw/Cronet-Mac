@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "base/macros.h"
+#include "net/net_features.h"
 #include "net/base/completion_callback.h"
 #include "net/base/net_error_details.h"
 #include "net/base/net_errors.h"
@@ -183,7 +184,7 @@ class NET_EXPORT_PRIVATE HttpStream {
   // Fills in |details| if it is available; leaves |details| unchanged if it
   // is unavailable.
   virtual void PopulateNetErrorDetails(NetErrorDetails* details) = 0;
-
+    
   // Called when the priority of the parent transaction changes.
   virtual void SetPriority(RequestPriority priority) = 0;
 

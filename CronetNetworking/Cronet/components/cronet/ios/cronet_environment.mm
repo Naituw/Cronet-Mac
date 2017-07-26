@@ -29,6 +29,7 @@
 #include "ios/net/cookies/cookie_store_ios.h"
 #include "ios/web/public/global_state/ios_global_state.h"
 #include "ios/web/public/user_agent.h"
+#include "net/net_features.h"
 #include "net/base/network_change_notifier.h"
 #include "net/cert/cert_verifier.h"
 #include "net/dns/host_resolver.h"
@@ -41,7 +42,9 @@
 #include "net/log/net_log.h"
 #include "net/log/net_log_capture_mode.h"
 #include "net/proxy/proxy_service.h"
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/core/quic_versions.h"
+#endif
 #include "net/socket/ssl_client_socket.h"
 #include "net/ssl/channel_id_service.h"
 #include "net/url_request/http_user_agent_settings.h"
@@ -328,6 +331,7 @@ void CronetEnvironment::InitializeOnNetworkThread() {
           [NSHTTPCookieStorage sharedHTTPCookieStorage]);
   context_builder.SetCookieAndChannelIdStores(std::move(cookie_store), nullptr);
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   std::unique_ptr<net::HttpServerProperties> http_server_properties(
       new net::HttpServerPropertiesImpl());
 
@@ -342,7 +346,8 @@ void CronetEnvironment::InitializeOnNetworkThread() {
   }
 
   context_builder.SetHttpServerProperties(std::move(http_server_properties));
-
+#endif
+    
   context_builder.set_enable_brotli(brotli_enabled_);
   main_context_ = context_builder.Build();
 

@@ -18,9 +18,14 @@
 #include "base/time/time.h"
 #include "net/base/host_port_pair.h"
 #include "net/base/net_export.h"
+#include "net/net_features.h"
+
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/core/quic_bandwidth.h"
 #include "net/quic/core/quic_server_id.h"
 #include "net/quic/core/quic_versions.h"
+#endif
+
 #include "net/socket/next_proto.h"
 #include "net/spdy/core/spdy_framer.h"  // TODO(willchan): Reconsider this.
 #include "net/spdy/core/spdy_protocol.h"
@@ -128,11 +133,13 @@ class NET_EXPORT_PRIVATE AlternativeServiceInfo {
       const AlternativeService& alternative_service,
       base::Time expiration);
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   static AlternativeServiceInfo CreateQuicAlternativeServiceInfo(
       const AlternativeService& alternative_service,
       base::Time expiration,
       const QuicVersionVector& advertised_versions);
-
+#endif
+    
   AlternativeServiceInfo();
   ~AlternativeServiceInfo();
 
@@ -145,7 +152,11 @@ class NET_EXPORT_PRIVATE AlternativeServiceInfo {
   bool operator==(const AlternativeServiceInfo& other) const {
     return alternative_service_ == other.alternative_service() &&
            expiration_ == other.expiration() &&
-           advertised_versions_ == other.advertised_versions();
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+      advertised_versions_ == other.advertised_versions();
+#else
+      true;
+#endif
   }
 
   bool operator!=(const AlternativeServiceInfo& other) const {
@@ -170,6 +181,7 @@ class NET_EXPORT_PRIVATE AlternativeServiceInfo {
     expiration_ = expiration;
   }
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   void set_advertised_versions(const QuicVersionVector& advertised_versions) {
     if (alternative_service_.protocol != kProtoQUIC)
       return;
@@ -177,6 +189,7 @@ class NET_EXPORT_PRIVATE AlternativeServiceInfo {
     advertised_versions_ = advertised_versions;
     std::sort(advertised_versions_.begin(), advertised_versions_.end());
   }
+#endif
 
   const AlternativeService& alternative_service() const {
     return alternative_service_;
@@ -190,25 +203,35 @@ class NET_EXPORT_PRIVATE AlternativeServiceInfo {
 
   base::Time expiration() const { return expiration_; }
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   const QuicVersionVector& advertised_versions() const {
     return advertised_versions_;
   }
+#endif
 
  private:
+    
   AlternativeServiceInfo(const AlternativeService& alternative_service,
-                         base::Time expiration,
-                         const QuicVersionVector& advertised_versions);
-
+                         base::Time expiration
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+                         , const QuicVersionVector& advertised_versions
+#endif
+                         );
+    
   AlternativeService alternative_service_;
   base::Time expiration_;
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   // Lists all the QUIC versions that are advertised by the server and supported
   // by Chrome. If empty, defaults to versions used by the current instance of
   // the netstack.
   // This list MUST be sorted in ascending order.
   QuicVersionVector advertised_versions_;
+#endif
 };
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+    
 struct NET_EXPORT SupportsQuic {
   SupportsQuic() : used_quic(false) {}
   SupportsQuic(bool used_quic, const std::string& address)
@@ -237,6 +260,8 @@ struct NET_EXPORT ServerNetworkStats {
   base::TimeDelta srtt;
   QuicBandwidth bandwidth_estimate;
 };
+    
+#endif
 
 typedef std::vector<AlternativeService> AlternativeServiceVector;
 typedef std::vector<AlternativeServiceInfo> AlternativeServiceInfoVector;
@@ -251,9 +276,13 @@ typedef std::list<std::pair<AlternativeService, base::TimeTicks>>
 // Map to the number of times each alternative service has been marked broken.
 typedef base::MRUCache<AlternativeService, int>
     RecentlyBrokenAlternativeServices;
+    
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 typedef base::MRUCache<url::SchemeHostPort, ServerNetworkStats>
     ServerNetworkStatsMap;
+    
 typedef base::MRUCache<QuicServerId, std::string> QuicServerInfoMap;
+#endif
 
 // Persist 5 QUIC Servers. This is mainly used by cronet.
 const int kMaxQuicServersToPersist = 5;
@@ -319,6 +348,7 @@ class NET_EXPORT HttpServerProperties {
       const AlternativeService& alternative_service,
       base::Time expiration) = 0;
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   // Set a single QUIC alternative service for |origin|.  Previous alternative
   // services for |origin| are discarded.
   // |alternative_service.host| may be empty.
@@ -329,7 +359,8 @@ class NET_EXPORT HttpServerProperties {
       const AlternativeService& alternative_service,
       base::Time expiration,
       const QuicVersionVector& advertised_versions) = 0;
-
+#endif
+    
   // Set alternative services for |origin|.  Previous alternative services for
   // |origin| are discarded.
   // Hostnames in |alternative_service_info_vector| may be empty.
@@ -379,6 +410,7 @@ class NET_EXPORT HttpServerProperties {
   virtual void SetSupportsQuic(bool used_quic,
                                const IPAddress& last_address) = 0;
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   // Sets |stats| for |server|.
   virtual void SetServerNetworkStats(const url::SchemeHostPort& server,
                                      ServerNetworkStats stats) = 0;
@@ -410,7 +442,8 @@ class NET_EXPORT HttpServerProperties {
   // Sets the number of server configs (QuicServerInfo objects) to be persisted.
   virtual void SetMaxServerConfigsStoredInProperties(
       size_t max_server_configs_stored_in_properties) = 0;
-
+#endif
+    
   // Returns whether HttpServerProperties is initialized.
   virtual bool IsInitialized() const = 0;
 

@@ -16,6 +16,7 @@
 #include "base/macros.h"
 #include "base/memory/ref_counted.h"
 #include "base/memory/weak_ptr.h"
+#include "net/net_features.h"
 #include "net/base/host_port_pair.h"
 #include "net/base/ip_endpoint.h"
 #include "net/base/net_errors.h"
@@ -59,7 +60,9 @@ class NET_EXPORT SpdySessionPool
                   SSLConfigService* ssl_config_service,
                   HttpServerProperties* http_server_properties,
                   TransportSecurityState* transport_security_state,
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
                   const QuicVersionVector& quic_supported_versions,
+#endif
                   bool enable_ping_based_connection_checking,
                   size_t session_max_recv_window_size,
                   const SettingsMap& initial_settings,
@@ -266,9 +269,11 @@ class NET_EXPORT SpdySessionPool
   const scoped_refptr<SSLConfigService> ssl_config_service_;
   HostResolver* const resolver_;
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   // Versions of QUIC which may be used.
   const QuicVersionVector quic_supported_versions_;
-
+#endif
+          
   // Defaults to true. May be controlled via SpdySessionPoolPeer for tests.
   bool enable_sending_initial_data_;
   bool enable_ping_based_connection_checking_;

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include "net/http/http_cache_lookup_manager.h"
+#include "net/http/http_request_info.h"
 
 #include "base/memory/ptr_util.h"
 #include "base/values.h"

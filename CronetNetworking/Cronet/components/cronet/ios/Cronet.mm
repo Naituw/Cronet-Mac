@@ -20,6 +20,7 @@
 #include "ios/net/crn_http_protocol_handler.h"
 #include "ios/net/empty_nsurlcache.h"
 #include "net/cert/cert_verifier.h"
+#include "net/cert/cert_verify_result.h"
 #include "net/url_request/url_request_context_getter.h"
 
 // Cronet NSError constants.

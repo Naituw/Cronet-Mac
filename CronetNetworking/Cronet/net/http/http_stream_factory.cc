@@ -15,7 +15,9 @@
 #include "net/base/port_util.h"
 #include "net/http/http_network_session.h"
 #include "net/http/http_response_headers.h"
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/core/quic_packets.h"
+#endif
 #include "net/spdy/core/spdy_alt_svc_wire_format.h"
 #include "url/gurl.h"
 
@@ -51,6 +53,7 @@ void HttpStreamFactory::ProcessAlternativeServices(
         !IsPortValid(alternative_service_entry.port)) {
       continue;
     }
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     // Check if QUIC version is supported. Filter supported QUIC versions.
     QuicVersionVector advertised_versions;
     if (protocol == kProtoQUIC && !alternative_service_entry.version.empty()) {
@@ -67,6 +70,7 @@ void HttpStreamFactory::ProcessAlternativeServices(
         continue;
       }
     }
+#endif
     AlternativeService alternative_service(protocol,
                                            alternative_service_entry.host,
                                            alternative_service_entry.port);
@@ -75,9 +79,11 @@ void HttpStreamFactory::ProcessAlternativeServices(
         base::TimeDelta::FromSeconds(alternative_service_entry.max_age);
     AlternativeServiceInfo alternative_service_info;
     if (protocol == kProtoQUIC) {
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
       alternative_service_info =
           AlternativeServiceInfo::CreateQuicAlternativeServiceInfo(
               alternative_service, expiration, advertised_versions);
+#endif
     } else {
       alternative_service_info =
           AlternativeServiceInfo::CreateHttp2AlternativeServiceInfo(

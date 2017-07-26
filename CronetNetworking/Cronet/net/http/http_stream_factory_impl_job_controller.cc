@@ -807,12 +807,15 @@ int HttpStreamFactoryImpl::JobController::DoCreateJobs() {
   // Create an alternative job if alternative service is set up for this domain.
   alternative_service_info_ =
       GetAlternativeServiceInfoFor(request_info_, delegate_, stream_type_);
+    
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   QuicVersion quic_version = QUIC_VERSION_UNSUPPORTED;
   if (alternative_service_info_.protocol() == kProtoQUIC) {
     quic_version =
         SelectQuicVersion(alternative_service_info_.advertised_versions());
     DCHECK_NE(quic_version, QUIC_VERSION_UNSUPPORTED);
   }
+#endif
 
   if (is_preconnect_) {
     // Due to how the socket pools handle priorities and idle sockets, only IDLE
@@ -827,7 +830,10 @@ int HttpStreamFactoryImpl::JobController::DoCreateJobs() {
       main_job_ = job_factory_->CreateAltSvcJob(
           this, PRECONNECT, session_, request_info_, IDLE, proxy_info_,
           server_ssl_config_, proxy_ssl_config_, alternative_destination,
-          origin_url, alternative_service_info_.protocol(), quic_version,
+          origin_url, alternative_service_info_.protocol(),
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+                                                quic_version,
+#endif
           enable_ip_based_pooling_, session_->net_log());
     } else {
       main_job_ = job_factory_->CreateMainJob(
@@ -849,7 +855,11 @@ int HttpStreamFactoryImpl::JobController::DoCreateJobs() {
     DVLOG(1) << "Selected alternative service (host: "
              << alternative_service_info_.host_port_pair().host()
              << " port: " << alternative_service_info_.host_port_pair().port()
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
              << " version: " << quic_version << ")";
+#else
+      ;
+#endif
 
     DCHECK(!request_info_.url.SchemeIs(url::kFtpScheme));
     HostPortPair alternative_destination(
@@ -859,7 +869,10 @@ int HttpStreamFactoryImpl::JobController::DoCreateJobs() {
     alternative_job_ = job_factory_->CreateAltSvcJob(
         this, ALTERNATIVE, session_, request_info_, priority_, proxy_info_,
         server_ssl_config_, proxy_ssl_config_, alternative_destination,
-        origin_url, alternative_service_info_.protocol(), quic_version,
+        origin_url, alternative_service_info_.protocol(),
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+                                                     quic_version,
+#endif
         enable_ip_based_pooling_, net_log_.net_log());
 
     main_job_is_blocked_ = true;
@@ -1158,32 +1171,41 @@ HttpStreamFactoryImpl::JobController::GetAlternativeServiceInfoInternal(
     if (!session_->IsQuicEnabled())
       continue;
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     if (stream_type == HttpStreamRequest::BIDIRECTIONAL_STREAM &&
         session_->params().quic_disable_bidirectional_streams) {
       continue;
     }
+#endif
 
     if (!original_url.SchemeIs(url::kHttpsScheme))
       continue;
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     // If there is no QUIC version in the advertised versions that is
     // supported, ignore this entry.
     if (SelectQuicVersion(alternative_service_info.advertised_versions()) ==
         QUIC_VERSION_UNSUPPORTED)
       continue;
+#endif
 
     // Check whether there is an existing QUIC session to use for this origin.
     HostPortPair mapped_origin(origin.host(), origin.port());
     ignore_result(ApplyHostMappingRules(original_url, &mapped_origin));
+      
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     QuicServerId server_id(mapped_origin, request_info.privacy_mode);
+#endif
 
     HostPortPair destination(alternative_service_info.host_port_pair());
     ignore_result(ApplyHostMappingRules(original_url, &destination));
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     if (session_->quic_stream_factory()->CanUseExistingSession(server_id,
                                                                destination))
       return alternative_service_info;
-
+#endif
+      
     // Cache this entry if we don't have a non-broken Alt-Svc yet.
     if (first_alternative_service_info.protocol() == kProtoUnknown)
       first_alternative_service_info = alternative_service_info;
@@ -1196,6 +1218,7 @@ HttpStreamFactoryImpl::JobController::GetAlternativeServiceInfoInternal(
   return first_alternative_service_info;
 }
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 QuicVersion HttpStreamFactoryImpl::JobController::SelectQuicVersion(
     const QuicVersionVector& advertised_versions) {
   const QuicVersionVector& supported_versions =
@@ -1214,6 +1237,7 @@ QuicVersion HttpStreamFactoryImpl::JobController::SelectQuicVersion(
 
   return QUIC_VERSION_UNSUPPORTED;
 }
+#endif
 
 bool HttpStreamFactoryImpl::JobController::
     ShouldCreateAlternativeProxyServerJob(

@@ -12,12 +12,15 @@
 #include "base/location.h"
 #include "base/task_runner.h"
 #include "base/threading/thread_task_runner_handle.h"
+#include "net/net_features.h"
 #include "net/base/sdch_manager.h"
 #include "net/disk_cache/disk_cache.h"
 #include "net/http/http_cache.h"
 #include "net/http/http_network_session.h"
 #include "net/http/http_transaction_factory.h"
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/chromium/quic_stream_factory.h"
+#endif
 #include "net/url_request/url_request_context.h"
 #include "net/url_request/url_request_context_getter.h"
 #include "url/gurl.h"
@@ -59,11 +62,13 @@ void ClearHttpCacheOnIOThread(
   net::HttpCache* http_cache =
       getter->GetURLRequestContext()->http_transaction_factory()->GetCache();
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   // Clear QUIC server information from memory and the disk cache.
   http_cache->GetSession()
       ->quic_stream_factory()
       ->ClearCachedStatesInCryptoConfig(base::Callback<bool(const GURL&)>());
-
+#endif
+    
   // Clear SDCH dictionary state.
   net::SdchManager* sdch_manager =
       getter->GetURLRequestContext()->sdch_manager();

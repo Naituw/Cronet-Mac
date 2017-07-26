@@ -580,7 +580,9 @@ void HttpNetworkTransaction::OnHttpsProxyTunnelResponse(
 }
 
 void HttpNetworkTransaction::OnQuicBroken() {
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   net_error_details_.quic_broken = true;
+#endif
 }
 
 void HttpNetworkTransaction::GetConnectionAttempts(
@@ -1558,7 +1560,9 @@ int HttpNetworkTransaction::HandleIOError(int error) {
             NetLogEventType::HTTP_TRANSACTION_RESTART_AFTER_ERROR, error);
         ResetConnectionAndRequestForResend();
         error = OK;
-      } else if (session_->params().retry_without_alt_svc_on_quic_errors) {
+      }
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+      else if (session_->params().retry_without_alt_svc_on_quic_errors) {
         // Disable alternative services for this request and retry it. If the
         // retry succeeds, then the alternative service will be marked as
         // broken then.
@@ -1568,6 +1572,7 @@ int HttpNetworkTransaction::HandleIOError(int error) {
         ResetConnectionAndRequestForResend();
         error = OK;
       }
+#endif
       break;
   }
   return error;
@@ -1594,8 +1599,10 @@ void HttpNetworkTransaction::ResetStateForAuthRestart() {
   response_ = HttpResponseInfo();
   establishing_tunnel_ = false;
   remote_endpoint_ = IPEndPoint();
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   net_error_details_.quic_broken = false;
   net_error_details_.quic_connection_error = QUIC_NO_ERROR;
+#endif
   provided_token_binding_key_.reset();
   referred_token_binding_key_.reset();
 }

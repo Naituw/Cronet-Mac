@@ -25,6 +25,7 @@
 #include "net/base/net_export.h"
 #include "net/http/broken_alternative_services.h"
 #include "net/http/http_server_properties.h"
+#include "net/net_features.h"
 
 namespace base {
 class TickClock;
@@ -54,6 +55,7 @@ class NET_EXPORT HttpServerPropertiesImpl
   void SetAlternativeServiceServers(
       std::unique_ptr<AlternativeServiceMap> alternate_protocol_servers);
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   void SetSupportsQuic(const IPAddress& last_address);
 
   void SetServerNetworkStats(
@@ -61,7 +63,8 @@ class NET_EXPORT HttpServerPropertiesImpl
 
   void SetQuicServerInfoMap(
       std::unique_ptr<QuicServerInfoMap> quic_server_info_map);
-
+#endif
+          
   // Get the list of servers (host/port) that support SPDY. The max_size is the
   // number of MRU servers that support SPDY that are to be returned.
   void GetSpdyServerList(std::vector<std::string>* spdy_servers,
@@ -104,11 +107,13 @@ class NET_EXPORT HttpServerPropertiesImpl
   bool SetHttp2AlternativeService(const url::SchemeHostPort& origin,
                                   const AlternativeService& alternative_service,
                                   base::Time expiration) override;
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   bool SetQuicAlternativeService(
       const url::SchemeHostPort& origin,
       const AlternativeService& alternative_service,
       base::Time expiration,
       const QuicVersionVector& advertised_versions) override;
+#endif
   bool SetAlternativeServices(const url::SchemeHostPort& origin,
                               const AlternativeServiceInfoVector&
                                   alternative_service_info_vector) override;
@@ -127,6 +132,7 @@ class NET_EXPORT HttpServerPropertiesImpl
       const override;
   bool GetSupportsQuic(IPAddress* last_address) const override;
   void SetSupportsQuic(bool used_quic, const IPAddress& address) override;
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   void SetServerNetworkStats(const url::SchemeHostPort& server,
                              ServerNetworkStats stats) override;
   void ClearServerNetworkStats(const url::SchemeHostPort& server) override;
@@ -140,6 +146,7 @@ class NET_EXPORT HttpServerPropertiesImpl
   size_t max_server_configs_stored_in_properties() const override;
   void SetMaxServerConfigsStoredInProperties(
       size_t max_server_configs_stored_in_properties) override;
+#endif
   bool IsInitialized() const override;
 
   // BrokenAlternativeServices::Delegate method.
@@ -174,9 +181,12 @@ class NET_EXPORT HttpServerPropertiesImpl
   AlternativeServiceMap alternative_service_map_;
 
   BrokenAlternativeServices broken_alternative_services_;
-
+          
   IPAddress last_quic_address_;
+          
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   ServerNetworkStatsMap server_network_stats_map_;
+#endif
   // Contains a map of servers which could share the same alternate protocol.
   // Map from a Canonical scheme/host/port (host is some postfix of host names)
   // to an actual origin, which has a plausible alternate protocol mapping.
@@ -185,8 +195,10 @@ class NET_EXPORT HttpServerPropertiesImpl
   // ".googlevideo.com", ".googleusercontent.com") of canonical hostnames.
   CanonicalSufficList canonical_suffixes_;
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   QuicServerInfoMap quic_server_info_map_;
   size_t max_server_configs_stored_in_properties_;
+#endif
 
   THREAD_CHECKER(thread_checker_);
 

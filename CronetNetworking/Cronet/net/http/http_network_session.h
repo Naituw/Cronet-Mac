@@ -27,7 +27,12 @@
 #include "net/dns/host_resolver.h"
 #include "net/http/http_auth_cache.h"
 #include "net/http/http_stream_factory.h"
+#include "net/net_features.h"
+
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/chromium/quic_stream_factory.h"
+#endif
+
 #include "net/socket/next_proto.h"
 #include "net/spdy/chromium/spdy_session_pool.h"
 #include "net/spdy/core/spdy_protocol.h"
@@ -59,8 +64,12 @@ class NetworkQualityProvider;
 class NetworkThrottleManager;
 class ProxyDelegate;
 class ProxyService;
+    
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 class QuicClock;
 class QuicCryptoClientStreamFactory;
+#endif
+    
 class SocketPerformanceWatcherFactory;
 class SOCKSClientSocketPool;
 class SSLClientSocketPool;
@@ -104,6 +113,7 @@ class NET_EXPORT HttpNetworkSession : public base::MemoryCoordinatorClient {
     // Whether to enable HTTP/2 Alt-Svc entries.
     bool enable_http2_alternative_service;
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     // Enables QUIC support.
     bool enable_quic;
 
@@ -158,7 +168,8 @@ class NET_EXPORT HttpNetworkSession : public base::MemoryCoordinatorClient {
     bool quic_race_cert_verification;
     // If true, estimate the initial RTT for QUIC connections based on network.
     bool quic_estimate_initial_rtt;
-
+#endif
+      
     // Enable support for Token Binding.
     bool enable_token_binding;
 
@@ -189,13 +200,15 @@ class NET_EXPORT HttpNetworkSession : public base::MemoryCoordinatorClient {
     SocketPerformanceWatcherFactory* socket_performance_watcher_factory;
     NetworkQualityProvider* network_quality_provider;
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     // Source of time for QUIC connections.
     QuicClock* quic_clock;
     // Source of entropy for QUIC connections.
     QuicRandom* quic_random;
     // Optional factory to use for creating QuicCryptoClientStreams.
     QuicCryptoClientStreamFactory* quic_crypto_client_stream_factory;
-
+#endif
+      
     ProxyDelegate* proxy_delegate;
   };
 
@@ -234,7 +247,9 @@ class NET_EXPORT HttpNetworkSession : public base::MemoryCoordinatorClient {
   ProxyService* proxy_service() { return proxy_service_; }
   SSLConfigService* ssl_config_service() { return ssl_config_service_.get(); }
   SpdySessionPool* spdy_session_pool() { return &spdy_session_pool_; }
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   QuicStreamFactory* quic_stream_factory() { return &quic_stream_factory_; }
+#endif
   HttpAuthHandlerFactory* http_auth_handler_factory() {
     return http_auth_handler_factory_;
   }
@@ -260,10 +275,12 @@ class NET_EXPORT HttpNetworkSession : public base::MemoryCoordinatorClient {
   // Creates a Value summary of the state of the SPDY sessions.
   std::unique_ptr<base::Value> SpdySessionPoolInfoToValue() const;
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   // Creates a Value summary of the state of the QUIC sessions and
   // configuration.
   std::unique_ptr<base::Value> QuicInfoToValue() const;
-
+#endif
+    
   void CloseAllConnections();
   void CloseIdleConnections();
 
@@ -322,7 +339,9 @@ class NET_EXPORT HttpNetworkSession : public base::MemoryCoordinatorClient {
   std::unique_ptr<ClientSocketPoolManager> normal_socket_pool_manager_;
   std::unique_ptr<ClientSocketPoolManager> websocket_socket_pool_manager_;
   std::unique_ptr<ServerPushDelegate> push_delegate_;
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   QuicStreamFactory quic_stream_factory_;
+#endif
   SpdySessionPool spdy_session_pool_;
   std::unique_ptr<HttpStreamFactory> http_stream_factory_;
   std::unique_ptr<HttpStreamFactory> http_stream_factory_for_websocket_;

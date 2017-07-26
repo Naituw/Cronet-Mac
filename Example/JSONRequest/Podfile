@@ -1,7 +1,7 @@
 
 platform :osx, '10.12'
 
-install! 'cocoapods', :deterministic_uuids => false, :integrate_targets => false
+install! 'cocoapods', :deterministic_uuids => false
 
 target 'JSONRequest'
 pod 'CronetNetworking', :path => '../../'

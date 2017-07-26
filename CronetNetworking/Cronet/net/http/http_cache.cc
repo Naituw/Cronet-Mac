@@ -45,7 +45,9 @@
 #include "net/http/http_response_info.h"
 #include "net/http/http_util.h"
 #include "net/log/net_log_with_source.h"
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/chromium/quic_server_info.h"
+#endif
 
 #if defined(OS_POSIX)
 #include <unistd.h>

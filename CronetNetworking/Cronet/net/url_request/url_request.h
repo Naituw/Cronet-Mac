@@ -19,6 +19,7 @@
 #include "base/supports_user_data.h"
 #include "base/threading/thread_checker.h"
 #include "base/time/time.h"
+#include "net/net_features.h"
 #include "net/base/auth.h"
 #include "net/base/completion_callback.h"
 #include "net/base/load_states.h"
@@ -498,7 +499,7 @@ class NET_EXPORT URLRequest : public base::SupportsUserData {
   // Gets the networkd error details of the most recent origin that the network
   // stack makes the request to.
   void PopulateNetErrorDetails(NetErrorDetails* details) const;
-
+    
   // Gets the remote endpoint of the most recent socket that the network stack
   // used to make this request.
   //

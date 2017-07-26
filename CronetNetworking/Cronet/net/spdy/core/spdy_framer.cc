@@ -17,7 +17,10 @@
 #include "base/logging.h"
 #include "base/metrics/histogram_macros.h"
 #include "base/strings/string_util.h"
+#include "net/net_features.h"
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/platform/api/quic_flags.h"
+#endif
 #include "net/spdy/chromium/spdy_flags.h"
 #include "net/spdy/core/hpack/hpack_constants.h"
 #include "net/spdy/core/hpack/hpack_decoder3.h"

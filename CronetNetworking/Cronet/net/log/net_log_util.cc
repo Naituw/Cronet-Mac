@@ -38,8 +38,10 @@
 #include "net/proxy/proxy_config.h"
 #include "net/proxy/proxy_retry_info.h"
 #include "net/proxy/proxy_service.h"
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/core/quic_error_codes.h"
 #include "net/quic/core/quic_packets.h"
+#endif
 #include "net/socket/ssl_client_socket.h"
 #include "net/url_request/url_request.h"
 #include "net/url_request/url_request_context.h"
@@ -207,6 +209,7 @@ std::unique_ptr<base::DictionaryValue> GetNetConstants() {
     constants_dict->Set("netError", std::move(dict));
   }
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   // Add information on the relationship between QUIC error codes and their
   // symbolic names.
   {
@@ -234,6 +237,7 @@ std::unique_ptr<base::DictionaryValue> GetNetConstants() {
 
     constants_dict->Set("quicRstStreamError", std::move(dict));
   }
+#endif
 
   // Add information on the relationship between SDCH problem codes and their
   // symbolic names.
@@ -443,10 +447,12 @@ NET_EXPORT std::unique_ptr<base::DictionaryValue> GetNetInfo(
         http_server_properties.GetAlternativeServiceInfoAsValue());
   }
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   if (info_sources & NET_INFO_QUIC) {
     net_info_dict->Set(NetInfoSourceToString(NET_INFO_QUIC),
                        http_network_session->QuicInfoToValue());
   }
+#endif
 
   if (info_sources & NET_INFO_HTTP_CACHE) {
     auto info_dict = base::MakeUnique<base::DictionaryValue>();

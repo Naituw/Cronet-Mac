@@ -85,10 +85,14 @@ AlternativeServiceInfo::CreateHttp2AlternativeServiceInfo(
     const AlternativeService& alternative_service,
     base::Time expiration) {
   DCHECK_EQ(alternative_service.protocol, kProtoHTTP2);
-  return AlternativeServiceInfo(alternative_service, expiration,
-                                QuicVersionVector());
+  return AlternativeServiceInfo(alternative_service, expiration
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+                                ,QuicVersionVector()
+#endif
+                                );
 }
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 // static
 AlternativeServiceInfo AlternativeServiceInfo::CreateQuicAlternativeServiceInfo(
     const AlternativeService& alternative_service,
@@ -98,6 +102,7 @@ AlternativeServiceInfo AlternativeServiceInfo::CreateQuicAlternativeServiceInfo(
   return AlternativeServiceInfo(alternative_service, expiration,
                                 advertised_versions);
 }
+#endif
 
 AlternativeServiceInfo::AlternativeServiceInfo() : alternative_service_() {}
 
@@ -105,13 +110,18 @@ AlternativeServiceInfo::~AlternativeServiceInfo() {}
 
 AlternativeServiceInfo::AlternativeServiceInfo(
     const AlternativeService& alternative_service,
-    base::Time expiration,
-    const QuicVersionVector& advertised_versions)
+    base::Time expiration
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+  , const QuicVersionVector& advertised_versions
+#endif
+                                               )
     : alternative_service_(alternative_service), expiration_(expiration) {
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   if (alternative_service_.protocol == kProtoQUIC) {
     advertised_versions_ = advertised_versions;
     std::sort(advertised_versions_.begin(), advertised_versions_.end());
   }
+#endif
 }
 
 AlternativeServiceInfo::AlternativeServiceInfo(

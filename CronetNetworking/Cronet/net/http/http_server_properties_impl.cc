@@ -23,10 +23,14 @@ namespace net {
 HttpServerPropertiesImpl::HttpServerPropertiesImpl(base::TickClock* clock)
     : spdy_servers_map_(SpdyServersMap::NO_AUTO_EVICT),
       alternative_service_map_(AlternativeServiceMap::NO_AUTO_EVICT),
-      broken_alternative_services_(this, clock ? clock : &default_clock_),
+      broken_alternative_services_(this, clock ? clock : &default_clock_)
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
+    ,
       server_network_stats_map_(ServerNetworkStatsMap::NO_AUTO_EVICT),
       quic_server_info_map_(QuicServerInfoMap::NO_AUTO_EVICT),
-      max_server_configs_stored_in_properties_(kMaxQuicServersToPersist) {
+      max_server_configs_stored_in_properties_(kMaxQuicServersToPersist)
+#endif
+{
   canonical_suffixes_.push_back(".ggpht.com");
   canonical_suffixes_.push_back(".c.youtube.com");
   canonical_suffixes_.push_back(".googlevideo.com");
@@ -108,7 +112,7 @@ void HttpServerPropertiesImpl::SetAlternativeServiceServers(
     }
   }
 }
-
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 void HttpServerPropertiesImpl::SetSupportsQuic(const IPAddress& last_address) {
   last_quic_address_ = last_address;
 }
@@ -142,6 +146,8 @@ void HttpServerPropertiesImpl::SetQuicServerInfoMap(
     }
   }
 }
+    
+#endif
 
 void HttpServerPropertiesImpl::GetSpdyServerList(
     std::vector<std::string>* spdy_servers,
@@ -186,9 +192,11 @@ void HttpServerPropertiesImpl::Clear() {
   spdy_servers_map_.Clear();
   alternative_service_map_.Clear();
   canonical_host_to_origin_map_.clear();
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   last_quic_address_ = IPAddress();
   server_network_stats_map_.Clear();
   quic_server_info_map_.Clear();
+#endif
 }
 
 bool HttpServerPropertiesImpl::SupportsRequestPriority(
@@ -304,10 +312,12 @@ HttpServerPropertiesImpl::GetAlternativeServiceInfos(
         continue;
       }
       if (alternative_service.protocol == kProtoQUIC) {
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
         valid_alternative_service_infos.push_back(
             AlternativeServiceInfo::CreateQuicAlternativeServiceInfo(
                 alternative_service, it->expiration(),
                 it->advertised_versions()));
+#endif
       } else {
         valid_alternative_service_infos.push_back(
             AlternativeServiceInfo::CreateHttp2AlternativeServiceInfo(
@@ -348,10 +358,12 @@ HttpServerPropertiesImpl::GetAlternativeServiceInfos(
       continue;
     }
     if (alternative_service.protocol == kProtoQUIC) {
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
       valid_alternative_service_infos.push_back(
           AlternativeServiceInfo::CreateQuicAlternativeServiceInfo(
               alternative_service, it->expiration(),
               it->advertised_versions()));
+#endif
     } else {
       valid_alternative_service_infos.push_back(
           AlternativeServiceInfo::CreateHttp2AlternativeServiceInfo(
@@ -378,6 +390,7 @@ bool HttpServerPropertiesImpl::SetHttp2AlternativeService(
                           alternative_service, expiration)));
 }
 
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 bool HttpServerPropertiesImpl::SetQuicAlternativeService(
     const url::SchemeHostPort& origin,
     const AlternativeService& alternative_service,
@@ -391,7 +404,8 @@ bool HttpServerPropertiesImpl::SetQuicAlternativeService(
                   AlternativeServiceInfo::CreateQuicAlternativeServiceInfo(
                       alternative_service, expiration, advertised_versions)));
 }
-
+#endif
+    
 bool HttpServerPropertiesImpl::SetAlternativeServices(
     const url::SchemeHostPort& origin,
     const AlternativeServiceInfoVector& alternative_service_info_vector) {
@@ -429,12 +443,15 @@ bool HttpServerPropertiesImpl::SetAlternativeServices(
           changed = true;
           break;
         }
+          
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
         // Also persist to disk if new entry has a different list of advertised
         // versions.
         if (old.advertised_versions() != new_it->advertised_versions()) {
           changed = true;
           break;
         }
+#endif
         ++new_it;
       }
     }
@@ -550,6 +567,8 @@ void HttpServerPropertiesImpl::SetSupportsQuic(bool used_quic,
     last_quic_address_ = address;
   }
 }
+    
+#if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 
 void HttpServerPropertiesImpl::SetServerNetworkStats(
     const url::SchemeHostPort& server,
@@ -623,6 +642,8 @@ void HttpServerPropertiesImpl::SetMaxServerConfigsStoredInProperties(
 
   quic_server_info_map_.Swap(temp_map);
 }
+    
+#endif
 
 bool HttpServerPropertiesImpl::IsInitialized() const {
   // No initialization is needed.
