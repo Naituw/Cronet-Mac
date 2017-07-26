@@ -32,6 +32,7 @@ Pod::Spec.new do |s|
     sp.header_mappings_dir = 'CronetNetworking/Cronet'
   end
 
+  s.public_header_files = ['CronetNetworking/Cronet/components/cronet/ios/{Cronet,bidirectional_stream_c}.h'];
   s.xcconfig = { "USE_HEADERMAP" => "0" ,
                  "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/Headers/Private/CronetNetworking/third_party/boringssl/src/include"}
 end

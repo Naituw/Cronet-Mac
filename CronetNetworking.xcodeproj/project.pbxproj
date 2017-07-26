@@ -1985,7 +1985,6 @@
 		C6F702AB1F26055E005996DB /* callback_list.h in Headers */ = {isa = PBXBuildFile; fileRef = C6F7FCE71F26055A005996DB /* callback_list.h */; };
 		C6F702AD1F26055E005996DB /* callback.h in Headers */ = {isa = PBXBuildFile; fileRef = C6F7FCEA1F26055A005996DB /* callback.h */; };
 		C6F702AF1F26055E005996DB /* cancelable_callback.h in Headers */ = {isa = PBXBuildFile; fileRef = C6F7FCEC1F26055A005996DB /* cancelable_callback.h */; };
-		C6F702B01F26055E005996DB /* check_example.cc in Sources */ = {isa = PBXBuildFile; fileRef = C6F7FCED1F26055A005996DB /* check_example.cc */; };
 		C6F702B21F26055E005996DB /* command_line.cc in Sources */ = {isa = PBXBuildFile; fileRef = C6F7FCEF1F26055A005996DB /* command_line.cc */; };
 		C6F702B31F26055E005996DB /* command_line.h in Headers */ = {isa = PBXBuildFile; fileRef = C6F7FCF01F26055A005996DB /* command_line.h */; };
 		C6F702B41F26055E005996DB /* compiler_specific.h in Headers */ = {isa = PBXBuildFile; fileRef = C6F7FCF11F26055A005996DB /* compiler_specific.h */; };
@@ -6072,7 +6071,6 @@
 		C6F7FCE71F26055A005996DB /* callback_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = callback_list.h; sourceTree = "<group>"; };
 		C6F7FCEA1F26055A005996DB /* callback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = callback.h; sourceTree = "<group>"; };
 		C6F7FCEC1F26055A005996DB /* cancelable_callback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cancelable_callback.h; sourceTree = "<group>"; };
-		C6F7FCED1F26055A005996DB /* check_example.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = check_example.cc; sourceTree = "<group>"; };
 		C6F7FCEF1F26055A005996DB /* command_line.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = command_line.cc; sourceTree = "<group>"; };
 		C6F7FCF01F26055A005996DB /* command_line.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = command_line.h; sourceTree = "<group>"; };
 		C6F7FCF11F26055A005996DB /* compiler_specific.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = compiler_specific.h; sourceTree = "<group>"; };
@@ -11132,7 +11130,6 @@
 				C6F7FCE71F26055A005996DB /* callback_list.h */,
 				C6F7FCEA1F26055A005996DB /* callback.h */,
 				C6F7FCEC1F26055A005996DB /* cancelable_callback.h */,
-				C6F7FCED1F26055A005996DB /* check_example.cc */,
 				C6F7FCEF1F26055A005996DB /* command_line.cc */,
 				C6F7FCF01F26055A005996DB /* command_line.h */,
 				C6F7FCF11F26055A005996DB /* compiler_specific.h */,
@@ -13457,7 +13454,6 @@
 				C66F91951F2618AB006EFCDD /* ec_signature_creator_impl.cc in Sources */,
 				C6F7069E1F26055F005996DB /* prtime.cc in Sources */,
 				C6BB5CF71F2741BE005006C4 /* quic_framer.cc in Sources */,
-				C6F702B01F26055E005996DB /* check_example.cc in Sources */,
 				C6F7076C1F260560005996DB /* heap_profiler_event_filter.cc in Sources */,
 				C66FA4F11F2618F4006EFCDD /* v3_cpols.c in Sources */,
 				C6F7058F1F26055F005996DB /* string16.cc in Sources */,

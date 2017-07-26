@@ -119,10 +119,10 @@ std::string DataToString(CSSM_DATA data) {
 
 // Converts raw CSSM_DATA in ISO-8859-1 to a std::string in UTF-8.
 std::string Latin1DataToUTF8String(CSSM_DATA data) {
-  base::string16 utf16;
-  if (!ConvertToUTF16(DataToString(data), kCharsetLatin1, &utf16))
+  std::string utf8;
+  if (!ConvertToUtf8(DataToString(data), kCharsetLatin1, &utf8))
     return "";
-  return base::UTF16ToUTF8(utf16);
+  return utf8;
 }
 
 // Converts big-endian UTF-16 to UTF-8 in a std::string.

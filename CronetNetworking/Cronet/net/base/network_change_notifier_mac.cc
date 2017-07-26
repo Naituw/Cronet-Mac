@@ -53,8 +53,10 @@ NetworkChangeNotifierMac::NetworkChangeNotifierMac()
   // Must be initialized after the rest of this object, as it may call back into
   // SetInitialConnectionType().
   config_watcher_ = base::MakeUnique<NetworkConfigWatcherMac>(&forwarder_);
-  dns_config_service_thread_->StartWithOptions(
-      base::Thread::Options(base::MessageLoop::TYPE_IO, 0));
+  
+  // Watching /etc/hosts is not supported in sandboxed-app
+//  dns_config_service_thread_->StartWithOptions(
+//      base::Thread::Options(base::MessageLoop::TYPE_IO, 0));
 }
 
 NetworkChangeNotifierMac::~NetworkChangeNotifierMac() {
