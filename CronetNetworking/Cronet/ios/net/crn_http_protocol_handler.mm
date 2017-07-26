@@ -736,7 +736,7 @@ void HttpProtocolHandlerCore::StopListeningStream(NSStream* stream) {
   DCHECK(thread_checker_.CalledOnValidThread());
   DCHECK(stream);
   DCHECK(stream_delegate_);
-  DCHECK([stream delegate] == stream_delegate_.get());
+  DCHECK(![stream delegate] || [stream delegate] == stream_delegate_.get());
   [stream setDelegate:nil];
   [stream removeFromRunLoop:[NSRunLoop currentRunLoop]
                     forMode:NSDefaultRunLoopMode];
