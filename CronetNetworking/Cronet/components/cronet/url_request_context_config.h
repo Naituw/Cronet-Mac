@@ -108,7 +108,7 @@ struct URLRequestContextConfig {
       // JSON encoded experimental options.
       const std::string& experimental_options,
       // MockCertVerifier to use for testing purposes.
-      std::unique_ptr<net::CertVerifier> mock_cert_verifier,
+      std::unique_ptr<net::CertVerifier> cert_verifier,
       // Enable network quality estimator.
       bool enable_network_quality_estimator,
       // Enable bypassing of public key pinning for local trust anchors
@@ -145,8 +145,8 @@ struct URLRequestContextConfig {
   // User-Agent request header field.
   const std::string user_agent;
 
-  // Certificate verifier for testing.
-  std::unique_ptr<net::CertVerifier> mock_cert_verifier;
+  // Certificate verifier.
+  std::unique_ptr<net::CertVerifier> cert_verifier;
 
   // Enable Network Quality Estimator (NQE).
   const bool enable_network_quality_estimator;
@@ -211,7 +211,7 @@ struct URLRequestContextConfigBuilder {
   ~URLRequestContextConfigBuilder();
 
   // Finalize state into a URLRequestContextConfig.  Must only be called once,
-  // as once |mock_cert_verifier| is moved into a URLRequestContextConfig, it
+  // as once |cert_verifier| is moved into a URLRequestContextConfig, it
   // cannot be used again.
   std::unique_ptr<URLRequestContextConfig> Build();
 
@@ -246,7 +246,7 @@ struct URLRequestContextConfigBuilder {
   std::string experimental_options = "{}";
 
   // Certificate verifier for testing.
-  std::unique_ptr<net::CertVerifier> mock_cert_verifier = nullptr;
+  std::unique_ptr<net::CertVerifier> cert_verifier = nullptr;
 
   // Enable network quality estimator.
   bool enable_network_quality_estimator = false;

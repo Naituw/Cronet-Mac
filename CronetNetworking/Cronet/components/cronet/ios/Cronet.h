@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #import <Foundation/Foundation.h>
+#import <Security/Security.h>
 
 #include "bidirectional_stream_c.h"
 
@@ -21,7 +22,7 @@ typedef NS_ENUM(NSInteger, CRNHttpCacheType) {
 FOUNDATION_EXPORT GRPC_SUPPORT_EXPORT NSString* const CRNCronetErrorDomain;
 
 /// Enum of Cronet NSError codes.
-NS_ENUM(NSInteger){
+typedef NS_ENUM(NSInteger, CRNErrorCode) {
     CRNErrorInvalidArgument = 1001, CRNErrorUnsupportedConfig = 1002,
 };
 
@@ -32,6 +33,10 @@ FOUNDATION_EXPORT GRPC_SUPPORT_EXPORT NSString* const CRNInvalidArgumentKey;
 // A block, that takes a request, and returns YES if the request should
 // be handled.
 typedef BOOL (^RequestFilterBlock)(NSURLRequest* request);
+    
+@protocol CRNCertVerifing <NSObject>
+- (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust forDomain:(NSString *)domain;
+@end
 
 // Interface for installing Cronet.
 // TODO(gcasto): Should this macro be separate from the one defined in
@@ -123,6 +128,8 @@ GRPC_SUPPORT_EXPORT
               includeSubdomains:(BOOL)includeSubdomains
                  expirationDate:(NSDate*)expirationDate
                           error:(NSError**)outError;
+
++ (void)setCertVerifier:(id<CRNCertVerifing>)certVerifier;
 
 // Sets the block used to determine whether or not Cronet should handle the
 // request. If the block is not set, Cronet will handle all requests. Cronet

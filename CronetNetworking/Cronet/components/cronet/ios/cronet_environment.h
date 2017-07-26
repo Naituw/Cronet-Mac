@@ -85,9 +85,9 @@ class CronetEnvironment {
     accept_language_ = accept_language;
   }
 
-  void set_mock_cert_verifier(
-      std::unique_ptr<net::CertVerifier> mock_cert_verifier) {
-    mock_cert_verifier_ = std::move(mock_cert_verifier);
+  void set_cert_verifier(
+      std::unique_ptr<net::CertVerifier> cert_verifier) {
+    cert_verifier_ = std::move(cert_verifier);
   }
 
   void set_http_cache(URLRequestContextConfig::HttpCacheType http_cache) {
@@ -161,7 +161,7 @@ class CronetEnvironment {
   std::unique_ptr<base::Thread> file_thread_;
   std::unique_ptr<base::Thread> file_user_blocking_thread_;
   scoped_refptr<base::SequencedTaskRunner> pref_store_worker_pool_;
-  std::unique_ptr<net::CertVerifier> mock_cert_verifier_;
+  std::unique_ptr<net::CertVerifier> cert_verifier_;
   std::unique_ptr<net::CookieStore> cookie_store_;
   std::unique_ptr<net::URLRequestContext> main_context_;
   scoped_refptr<net::URLRequestContextGetter> main_context_getter_;

@@ -295,8 +295,8 @@ void CronetEnvironment::InitializeOnNetworkThread() {
       user_agent_;  // User-Agent request header field.
   context_config_builder.experimental_options =
       experimental_options_;  // Set experimental Cronet options.
-  context_config_builder.mock_cert_verifier = std::move(
-      mock_cert_verifier_);  // MockCertVerifier to use for testing purposes.
+  context_config_builder.cert_verifier = std::move(
+      cert_verifier_);  // MockCertVerifier to use for testing purposes.
   std::unique_ptr<URLRequestContextConfig> config =
       context_config_builder.Build();
 

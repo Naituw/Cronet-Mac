@@ -9,15 +9,31 @@
 #import "ViewController.h"
 #import <CronetNetworking/components/cronet/ios/Cronet.h>
 
+@interface Verifier : NSObject <CRNCertVerifing>
+
+- (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust forDomain:(NSString *)domain;
+
+@end
+
+@implementation Verifier
+
+- (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust forDomain:(NSString *)domain
+{
+    return YES;
+}
+
+@end
+
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [Cronet setCertVerifier:[Verifier new]];
     [Cronet start];
     [Cronet registerHttpProtocolHandler];
     
-    [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:@"http://api.weibo.com/2/short_url/info.json"] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:@"https://api.weibo.com/2/short_url/info.json"] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSLog(@"response: %@", response);
     }] resume];
     

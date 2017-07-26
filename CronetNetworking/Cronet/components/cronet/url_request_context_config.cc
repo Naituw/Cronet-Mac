@@ -149,7 +149,7 @@ URLRequestContextConfig::URLRequestContextConfig(
     const std::string& storage_path,
     const std::string& user_agent,
     const std::string& experimental_options,
-    std::unique_ptr<net::CertVerifier> mock_cert_verifier,
+    std::unique_ptr<net::CertVerifier> cert_verifier,
     bool enable_network_quality_estimator,
     bool bypass_public_key_pinning_for_local_trust_anchors,
     const std::string& cert_verifier_data)
@@ -163,7 +163,7 @@ URLRequestContextConfig::URLRequestContextConfig(
       load_disable_cache(load_disable_cache),
       storage_path(storage_path),
       user_agent(user_agent),
-      mock_cert_verifier(std::move(mock_cert_verifier)),
+      cert_verifier(std::move(cert_verifier)),
       enable_network_quality_estimator(enable_network_quality_estimator),
       bypass_public_key_pinning_for_local_trust_anchors(
           bypass_public_key_pinning_for_local_trust_anchors),
@@ -471,17 +471,17 @@ void URLRequestContextConfig::ConfigureURLRequestContextBuilder(
                                  file_task_runner);
   context_builder->set_http_network_session_params(session_params);
 
-  std::unique_ptr<net::CertVerifier> cert_verifier;
-  if (mock_cert_verifier) {
+  std::unique_ptr<net::CertVerifier> final_cert_verifier;
+  if (cert_verifier) {
     // Because |context_builder| expects CachingCertVerifier, wrap
-    // |mock_cert_verifier| into a CachingCertVerifier.
-    cert_verifier = base::MakeUnique<net::CachingCertVerifier>(
-        std::move(mock_cert_verifier));
+    // |cert_verifier| into a CachingCertVerifier.
+    final_cert_verifier = base::MakeUnique<net::CachingCertVerifier>(
+        std::move(cert_verifier));
   } else {
     // net::CertVerifier::CreateDefault() returns a CachingCertVerifier.
-    cert_verifier = net::CertVerifier::CreateDefault();
+    final_cert_verifier = net::CertVerifier::CreateDefault();
   }
-  context_builder->SetCertVerifier(std::move(cert_verifier));
+  context_builder->SetCertVerifier(std::move(final_cert_verifier));
   // Certificate Transparency is intentionally ignored in Cronet.
   // See //net/docs/certificate-transparency.md for more details.
   context_builder->set_ct_verifier(
@@ -499,7 +499,7 @@ URLRequestContextConfigBuilder::Build() {
   return base::MakeUnique<URLRequestContextConfig>(
       enable_quic, quic_user_agent_id, enable_spdy, enable_sdch, enable_brotli,
       http_cache, http_cache_max_size, load_disable_cache, storage_path,
-      user_agent, experimental_options, std::move(mock_cert_verifier),
+      user_agent, experimental_options, std::move(cert_verifier),
       enable_network_quality_estimator,
       bypass_public_key_pinning_for_local_trust_anchors, cert_verifier_data);
 }
