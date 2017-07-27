@@ -32,7 +32,7 @@
 #include "base/message_loop/message_pump_win.h"
 #elif defined(OS_FUCHSIA)
 #include "base/message_loop/message_pump_fuchsia.h"
-#elif defined(OS_IOS)
+#elif defined(OS_IOS) || defined(OS_MACOSX)
 #include "base/message_loop/message_pump_io_ios.h"
 #elif defined(OS_POSIX)
 #include "base/message_loop/message_pump_libevent.h"
@@ -576,7 +576,7 @@ class BASE_EXPORT MessageLoopForIO : public MessageLoop {
   enum Mode{WATCH_READ = MessagePumpFuchsia::WATCH_READ,
             WATCH_WRITE = MessagePumpFuchsia::WATCH_WRITE,
             WATCH_READ_WRITE = MessagePumpFuchsia::WATCH_READ_WRITE};
-#elif defined(OS_IOS)
+#elif defined(OS_IOS) || defined(OS_MACOSX)
   typedef MessagePumpIOSForIO::Watcher Watcher;
   typedef MessagePumpIOSForIO::FileDescriptorWatcher
       FileDescriptorWatcher;

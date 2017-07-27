@@ -22,7 +22,7 @@
 #if defined(OS_MACOSX)
 #include "base/message_loop/message_pump_mac.h"
 #endif
-#if defined(OS_POSIX) && !defined(OS_IOS) && !defined(OS_FUCHSIA)
+#if defined(OS_POSIX) && !defined(OS_IOS) && !defined(OS_MACOSX) && !defined(OS_FUCHSIA)
 #include "base/message_loop/message_pump_libevent.h"
 #endif
 #if defined(OS_FUCHSIA)
@@ -47,7 +47,7 @@ base::ThreadLocalPointer<MessageLoop>* GetTLSMessageLoop() {
 }
 MessageLoop::MessagePumpFactory* message_pump_for_ui_factory_ = NULL;
 
-#if defined(OS_IOS)
+#if defined(OS_IOS) || defined(OS_MACOSX)
 typedef MessagePumpIOSForIO MessagePumpForIO;
 #elif defined(OS_NACL_SFI)
 typedef MessagePumpDefault MessagePumpForIO;
