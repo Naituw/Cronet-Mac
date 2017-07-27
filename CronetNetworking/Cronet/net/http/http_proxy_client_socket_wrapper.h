@@ -24,7 +24,10 @@
 #include "net/socket/ssl_client_socket.h"
 #include "net/socket/ssl_client_socket_pool.h"
 #include "net/socket/transport_client_socket_pool.h"
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 #include "net/spdy/chromium/spdy_session.h"
+#endif
 
 namespace net {
 
@@ -35,7 +38,11 @@ class HttpResponseInfo;
 class HttpStream;
 class IOBuffer;
 class ProxyDelegate;
+    
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 class SpdySessionPool;
+#endif
+    
 class SSLClientSocketPool;
 class TransportClientSocketPool;
 
@@ -66,7 +73,9 @@ class HttpProxyClientSocketWrapper : public ProxyClientSocket {
       const HostPortPair& endpoint,
       HttpAuthCache* http_auth_cache,
       HttpAuthHandlerFactory* http_auth_handler_factory,
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       SpdySessionPool* spdy_session_pool,
+#endif
       bool tunnel,
       ProxyDelegate* proxy_delegate,
       const NetLogWithSource& net_log);
@@ -85,7 +94,11 @@ class HttpProxyClientSocketWrapper : public ProxyClientSocket {
   std::unique_ptr<HttpStream> CreateConnectResponseStream() override;
   int RestartWithAuth(const CompletionCallback& callback) override;
   const scoped_refptr<HttpAuthController>& GetAuthController() const override;
+    
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   bool IsUsingSpdy() const override;
+#endif
+    
   NextProto GetProxyNegotiatedProtocol() const override;
 
   // StreamSocket implementation.
@@ -126,9 +139,13 @@ class HttpProxyClientSocketWrapper : public ProxyClientSocket {
     STATE_SSL_CONNECT_COMPLETE,
     STATE_HTTP_PROXY_CONNECT,
     STATE_HTTP_PROXY_CONNECT_COMPLETE,
+      
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
     STATE_SPDY_PROXY_CREATE_STREAM,
     STATE_SPDY_PROXY_CREATE_STREAM_COMPLETE,
     STATE_SPDY_PROXY_CONNECT_COMPLETE,
+#endif
+      
     STATE_RESTART_WITH_AUTH,
     STATE_RESTART_WITH_AUTH_COMPLETE,
     STATE_NONE,
@@ -151,9 +168,11 @@ class HttpProxyClientSocketWrapper : public ProxyClientSocket {
   int DoHttpProxyConnect();
   int DoHttpProxyConnectComplete(int result);
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   int DoSpdyProxyCreateStream();
   int DoSpdyProxyCreateStreamComplete(int result);
-
+#endif
+    
   int DoRestartWithAuth();
   int DoRestartWithAuthComplete(int result);
 
@@ -179,13 +198,18 @@ class HttpProxyClientSocketWrapper : public ProxyClientSocket {
 
   const std::string user_agent_;
   const HostPortPair endpoint_;
+    
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   SpdySessionPool* const spdy_session_pool_;
-
+#endif
+    
   bool has_restarted_;
   const bool tunnel_;
   ProxyDelegate* const proxy_delegate_;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   bool using_spdy_;
+#endif
   NextProto negotiated_protocol_;
 
   std::unique_ptr<HttpResponseInfo> error_response_info_;
@@ -198,8 +222,10 @@ class HttpProxyClientSocketWrapper : public ProxyClientSocket {
   // if necessary.
   CompletionCallback connect_callback_;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   SpdyStreamRequest spdy_stream_request_;
-
+#endif
+    
   scoped_refptr<HttpAuthController> http_auth_controller_;
 
   NetLogWithSource net_log_;

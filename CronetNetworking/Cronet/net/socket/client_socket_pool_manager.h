@@ -14,6 +14,7 @@
 #include "net/base/completion_callback.h"
 #include "net/base/net_export.h"
 #include "net/base/request_priority.h"
+#include "net/base/privacy_mode.h"
 #include "net/http/http_network_session.h"
 
 namespace base {

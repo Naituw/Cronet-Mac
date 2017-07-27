@@ -20,7 +20,10 @@ Pod::Spec.new do |s|
   non_arc_files = ['CronetNetworking/Cronet/base/**/*.{m,mm}']
   exclude_files = non_arc_files
 
+  exclude_files += ['CronetNetworking/Cronet/net/{docs}/**/*']
+
   exclude_files += ['CronetNetworking/Cronet/net/{quic,websocket,sdch}/**/*']
+  exclude_files += ['CronetNetworking/Cronet/net/{spdy,http2}/**/*']
 
   s.source_files = ['CronetNetworking/Cronet/**/*.{h,m,mm,c,cc,S}']
   s.exclude_files = exclude_files
@@ -34,5 +37,6 @@ Pod::Spec.new do |s|
 
   s.public_header_files = ['CronetNetworking/Cronet/components/cronet/ios/{Cronet,bidirectional_stream_c}.h'];
   s.xcconfig = { "USE_HEADERMAP" => "0" ,
-                 "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/Headers/Private/CronetNetworking/third_party/boringssl/src/include"}
+                 "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/Headers/Private/CronetNetworking/third_party/boringssl/src/include",
+                 "GCC_PREPROCESSOR_DEFINITIONS" => "DISABLED_SPDY_HTTP2=1"}
 end

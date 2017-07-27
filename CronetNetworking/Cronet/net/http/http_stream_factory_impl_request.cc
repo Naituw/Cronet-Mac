@@ -12,8 +12,11 @@
 #include "net/http/bidirectional_stream_impl.h"
 #include "net/http/http_stream_factory_impl_job.h"
 #include "net/log/net_log_event_type.h"
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 #include "net/spdy/chromium/spdy_http_stream.h"
 #include "net/spdy/chromium/spdy_session.h"
+#endif
 
 namespace net {
 
@@ -33,7 +36,11 @@ HttpStreamFactoryImpl::Request::Request(
       completed_(false),
       was_alpn_negotiated_(false),
       negotiated_protocol_(kProtoUnknown),
+    
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       using_spdy_(false),
+#endif
+    
       stream_type_(stream_type) {
   net_log_.BeginEvent(NetLogEventType::HTTP_STREAM_REQUEST);
 }
@@ -45,12 +52,17 @@ HttpStreamFactoryImpl::Request::~Request() {
 
 void HttpStreamFactoryImpl::Request::Complete(bool was_alpn_negotiated,
                                               NextProto negotiated_protocol,
-                                              bool using_spdy) {
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+                                              bool using_spdy
+#endif
+                                              ) {
   DCHECK(!completed_);
   completed_ = true;
   was_alpn_negotiated_ = was_alpn_negotiated;
   negotiated_protocol_ = negotiated_protocol;
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   using_spdy_ = using_spdy;
+#endif
 }
 
 void HttpStreamFactoryImpl::Request::OnStreamReadyOnPooledConnection(
@@ -94,10 +106,12 @@ NextProto HttpStreamFactoryImpl::Request::negotiated_protocol() const {
   return negotiated_protocol_;
 }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 bool HttpStreamFactoryImpl::Request::using_spdy() const {
   DCHECK(completed_);
   return using_spdy_;
 }
+#endif
 
 const ConnectionAttempts& HttpStreamFactoryImpl::Request::connection_attempts()
     const {

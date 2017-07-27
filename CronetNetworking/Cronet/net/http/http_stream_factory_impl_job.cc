@@ -48,11 +48,15 @@
 #include "net/socket/ssl_client_socket.h"
 #include "net/socket/ssl_client_socket_pool.h"
 #include "net/socket/stream_socket.h"
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 #include "net/spdy/chromium/bidirectional_stream_spdy_impl.h"
 #include "net/spdy/chromium/spdy_http_stream.h"
 #include "net/spdy/chromium/spdy_session.h"
 #include "net/spdy/chromium/spdy_session_pool.h"
 #include "net/spdy/core/spdy_protocol.h"
+#endif
+
 #include "net/ssl/channel_id_service.h"
 #include "net/ssl/ssl_cert_request_info.h"
 #include "url/url_constants.h"
@@ -194,8 +198,11 @@ HttpStreamFactoryImpl::Job::Job(Delegate* delegate,
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
       quic_version_(quic_version),
 #endif
+    
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       expect_spdy_(alternative_protocol == kProtoHTTP2 && !using_quic_),
       using_spdy_(false),
+#endif
       should_reconsider_proxy_(false),
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
       quic_request_(session_->quic_stream_factory()),
@@ -205,6 +212,7 @@ HttpStreamFactoryImpl::Job::Job(Delegate* delegate,
       was_alpn_negotiated_(false),
       negotiated_protocol_(kProtoUnknown),
       num_streams_(0),
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       spdy_session_direct_(
           !(proxy_info.is_https() && origin_url_.SchemeIs(url::kHttpScheme))),
       spdy_session_key_(using_quic_
@@ -213,6 +221,7 @@ HttpStreamFactoryImpl::Job::Job(Delegate* delegate,
                                                 proxy_info_.proxy_server(),
                                                 origin_url_,
                                                 request_info_.privacy_mode)),
+#endif
       stream_type_(HttpStreamRequest::BIDIRECTIONAL_STREAM),
       init_connection_already_resumed_(false),
       ptr_factory_(this) {
@@ -245,12 +254,14 @@ HttpStreamFactoryImpl::Job::Job(Delegate* delegate,
     DCHECK(job_type_ == ALTERNATIVE);
   }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   if (expect_spdy_) {
     DCHECK(origin_url_.SchemeIs(url::kHttpsScheme));
   }
   if (using_quic_) {
     DCHECK(session_->IsQuicEnabled());
   }
+#endif
 }
 
 HttpStreamFactoryImpl::Job::~Job() {
@@ -350,9 +361,11 @@ NextProto HttpStreamFactoryImpl::Job::negotiated_protocol() const {
   return negotiated_protocol_;
 }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 bool HttpStreamFactoryImpl::Job::using_spdy() const {
   return using_spdy_;
 }
+#endif
 
 size_t HttpStreamFactoryImpl::Job::EstimateMemoryUsage() const {
   StreamSocket::SocketMemoryStats stats;
@@ -417,6 +430,7 @@ bool HttpStreamFactoryImpl::Job::ShouldForceQuic(
 #endif
 }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 // static
 SpdySessionKey HttpStreamFactoryImpl::Job::GetSpdySessionKey(
     bool spdy_session_direct,
@@ -447,6 +461,7 @@ bool HttpStreamFactoryImpl::Job::CanUseExistingSpdySession() const {
   return origin_url_.SchemeIs(url::kHttpsScheme) ||
          proxy_info_.proxy_server().is_https();
 }
+#endif
 
 void HttpStreamFactoryImpl::Job::OnStreamReadyCallback() {
   DCHECK(stream_.get());
@@ -484,6 +499,7 @@ void HttpStreamFactoryImpl::Job::OnBidirectionalStreamImplReadyCallback() {
   // |this| may be deleted after this call.
 }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 void HttpStreamFactoryImpl::Job::OnNewSpdySessionReadyCallback() {
   DCHECK(stream_.get() || bidirectional_stream_impl_.get());
   DCHECK_NE(job_type_, PRECONNECT);
@@ -498,6 +514,7 @@ void HttpStreamFactoryImpl::Job::OnNewSpdySessionReadyCallback() {
   delegate_->OnNewSpdySessionReady(this, spdy_session, spdy_session_direct_);
   // |this| may be deleted after this call.
 }
+#endif
 
 void HttpStreamFactoryImpl::Job::OnStreamFailedCallback(int result) {
   DCHECK_NE(job_type_, PRECONNECT);
@@ -547,12 +564,15 @@ void HttpStreamFactoryImpl::Job::OnHttpsProxyTunnelResponseCallback(
 }
 
 void HttpStreamFactoryImpl::Job::OnPreconnectsComplete() {
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   DCHECK(!new_spdy_session_);
+#endif
 
   delegate_->OnPreconnectsComplete(this);
   // |this| may be deleted after this call.
 }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 // static
 int HttpStreamFactoryImpl::Job::OnHostResolution(
     SpdySessionPool* spdy_session_pool,
@@ -569,6 +589,7 @@ int HttpStreamFactoryImpl::Job::OnHostResolution(
              ? ERR_SPDY_SESSION_ALREADY_EXISTS
              : OK;
 }
+#endif
 
 void HttpStreamFactoryImpl::Job::OnIOComplete(int result) {
   TRACE_EVENT0(kNetTracingCategory, "HttpStreamFactoryImpl::Job::OnIOComplete");
@@ -582,11 +603,13 @@ void HttpStreamFactoryImpl::Job::RunLoop(int result) {
   if (result == ERR_IO_PENDING)
     return;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   if (!using_quic_) {
     // Resume all throttled Jobs with the same SpdySessionKey if there are any,
     // now that this job is done.
     session_->spdy_session_pool()->ResumePendingRequests(spdy_session_key_);
   }
+#endif
 
   if (job_type_ == PRECONNECT) {
     base::ThreadTaskRunnerHandle::Get()->PostTask(
@@ -662,11 +685,15 @@ void HttpStreamFactoryImpl::Job::RunLoop(int result) {
 
     case OK:
       next_state_ = STATE_DONE;
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       if (new_spdy_session_.get()) {
         base::ThreadTaskRunnerHandle::Get()->PostTask(
             FROM_HERE, base::Bind(&Job::OnNewSpdySessionReadyCallback,
                                   ptr_factory_.GetWeakPtr()));
-      } else if (delegate_->for_websockets()) {
+      } 
+      else
+#endif
+          if (delegate_->for_websockets()) {
         DCHECK(websocket_stream_);
         base::ThreadTaskRunnerHandle::Get()->PostTask(
             FROM_HERE, base::Bind(&Job::OnWebSocketHandshakeStreamReadyCallback,
@@ -770,7 +797,13 @@ int HttpStreamFactoryImpl::Job::DoStart() {
     net_log_.BeginEvent(
         NetLogEventType::HTTP_STREAM_JOB,
         base::Bind(&NetLogHttpStreamJobCallback, net_log->source(),
-                   &request_info_.url, &origin_url_, expect_spdy_, using_quic_,
+                   &request_info_.url, &origin_url_,
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+                   expect_spdy_,
+#else
+                   false,
+#endif
+                   using_quic_,
                    priority_));
     net_log->AddEvent(NetLogEventType::HTTP_STREAM_REQUEST_STARTED_JOB,
                       net_log_.source().ToEventParametersCallback());
@@ -810,10 +843,10 @@ int HttpStreamFactoryImpl::Job::DoEvaluateThrottle() {
     return OK;
   if (using_quic_)
     return OK;
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Ask |delegate_delegate_| to update the spdy session key for the request
   // that launched this job.
   delegate_->SetSpdySessionKey(this, spdy_session_key_);
-
   // Throttle connect to an HTTP/2 supported server, if there are pending
   // requests with the same SpdySessionKey.
   if (session_->http_server_properties()->RequiresHTTP11(
@@ -833,6 +866,7 @@ int HttpStreamFactoryImpl::Job::DoEvaluateThrottle() {
                                                   callback)) {
     return OK;
   }
+#endif
   base::ThreadTaskRunnerHandle::Get()->PostDelayedTask(
       FROM_HERE, callback, base::TimeDelta::FromMilliseconds(kHTTP2ThrottleMs));
   net_log_.AddEvent(NetLogEventType::HTTP_STREAM_JOB_THROTTLED);
@@ -943,6 +977,7 @@ int HttpStreamFactoryImpl::Job::DoInitConnectionImpl() {
 #endif
   }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Check first if we have a spdy session for this group.  If so, then go
   // straight to using that.
   if (CanUseExistingSpdySession()) {
@@ -960,7 +995,8 @@ int HttpStreamFactoryImpl::Job::DoInitConnectionImpl() {
       return OK;
     }
   }
-
+#endif
+    
   if (proxy_info_.is_http() || proxy_info_.is_https())
     establishing_tunnel_ = using_ssl_;
 

@@ -15,7 +15,11 @@
 #include "net/log/net_log_with_source.h"
 #include "net/socket/connection_attempts.h"
 #include "net/socket/ssl_client_socket.h"
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 #include "net/spdy/chromium/spdy_session_key.h"
+#endif
+
 #include "url/gurl.h"
 
 namespace net {
@@ -72,6 +76,7 @@ class HttpStreamFactoryImpl::Request : public HttpStreamRequest {
 
   const NetLogWithSource& net_log() const { return net_log_; }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Called when the |helper_| determines the appropriate |spdy_session_key|
   // for the Request. Note that this does not mean that SPDY is necessarily
   // supported for this SpdySessionKey, since we may need to wait for NPN to
@@ -85,13 +90,17 @@ class HttpStreamFactoryImpl::Request : public HttpStreamRequest {
     return spdy_session_key_.value();
   }
   void ResetSpdySessionKey() { spdy_session_key_.reset(); }
-
+#endif
+    
   HttpStreamRequest::StreamType stream_type() const { return stream_type_; }
 
   // Marks completion of the request. Must be called before OnStreamReady().
   void Complete(bool was_alpn_negotiated,
-                NextProto negotiated_protocol,
-                bool using_spdy);
+                NextProto negotiated_protocol
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+                ,bool using_spdy
+#endif
+                );
 
   // Called by |helper_| to record connection attempts made by the socket
   // layer in an attached Job for this stream request.
@@ -116,7 +125,11 @@ class HttpStreamFactoryImpl::Request : public HttpStreamRequest {
   LoadState GetLoadState() const override;
   bool was_alpn_negotiated() const override;
   NextProto negotiated_protocol() const override;
+    
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   bool using_spdy() const override;
+#endif
+    
   const ConnectionAttempts& connection_attempts() const override;
 
   bool completed() const { return completed_; }
@@ -131,13 +144,19 @@ class HttpStreamFactoryImpl::Request : public HttpStreamRequest {
       websocket_handshake_stream_create_helper_;
   const NetLogWithSource net_log_;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   base::Optional<SpdySessionKey> spdy_session_key_;
-
+#endif
+    
   bool completed_;
   bool was_alpn_negotiated_;
   // Protocol negotiated with the server.
   NextProto negotiated_protocol_;
+    
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   bool using_spdy_;
+#endif
+    
   ConnectionAttempts connection_attempts_;
 
   const HttpStreamRequest::StreamType stream_type_;

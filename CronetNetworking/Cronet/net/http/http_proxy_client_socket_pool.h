@@ -22,7 +22,10 @@
 #include "net/socket/client_socket_pool.h"
 #include "net/socket/client_socket_pool_base.h"
 #include "net/socket/ssl_client_socket.h"
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 #include "net/spdy/chromium/spdy_session.h"
+#endif
 
 namespace net {
 
@@ -52,7 +55,9 @@ class NET_EXPORT_PRIVATE HttpProxySocketParams
       const HostPortPair& endpoint,
       HttpAuthCache* http_auth_cache,
       HttpAuthHandlerFactory* http_auth_handler_factory,
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       SpdySessionPool* spdy_session_pool,
+#endif
       bool tunnel,
       ProxyDelegate* proxy_delegate);
 
@@ -68,9 +73,11 @@ class NET_EXPORT_PRIVATE HttpProxySocketParams
   HttpAuthHandlerFactory* http_auth_handler_factory() const {
     return http_auth_handler_factory_;
   }
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   SpdySessionPool* spdy_session_pool() {
     return spdy_session_pool_;
   }
+#endif
   const HostResolver::RequestInfo& destination() const;
   bool tunnel() const { return tunnel_; }
 
@@ -84,7 +91,9 @@ class NET_EXPORT_PRIVATE HttpProxySocketParams
 
   const scoped_refptr<TransportSocketParams> transport_params_;
   const scoped_refptr<SSLSocketParams> ssl_params_;
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   SpdySessionPool* spdy_session_pool_;
+#endif
   const std::string user_agent_;
   const HostPortPair endpoint_;
   HttpAuthCache* const http_auth_cache_;

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#if !DISABLED_SPDY_HTTP2
+
 #include "bidirectional_stream_c.h"
 
 #include <stdbool.h>
@@ -19,6 +21,7 @@
 #include "base/strings/string_number_conversions.h"
 #include "base/strings/string_split.h"
 #include "bidirectional_stream.h"
+#include "net/net_features.h"
 #include "net/base/io_buffer.h"
 #include "net/base/net_errors.h"
 #include "net/base/request_priority.h"
@@ -283,3 +286,6 @@ void bidirectional_stream_flush(bidirectional_stream* stream) {
 void bidirectional_stream_cancel(bidirectional_stream* stream) {
   BidirectionalStreamAdapter::GetStream(stream)->Cancel();
 }
+
+#endif // #if !DISABLED_SPDY_HTTP2
+

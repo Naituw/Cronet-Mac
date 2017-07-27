@@ -48,9 +48,11 @@ class NET_EXPORT HttpServerPropertiesImpl
 
   ~HttpServerPropertiesImpl() override;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Sets |spdy_servers_map_| with the servers (host/port) from
   // |spdy_servers| that either support SPDY or not.
   void SetSpdyServers(std::unique_ptr<SpdyServersMap> spdy_servers_map);
+#endif
 
   void SetAlternativeServiceServers(
       std::unique_ptr<AlternativeServiceMap> alternate_protocol_servers);
@@ -65,11 +67,13 @@ class NET_EXPORT HttpServerPropertiesImpl
       std::unique_ptr<QuicServerInfoMap> quic_server_info_map);
 #endif
           
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Get the list of servers (host/port) that support SPDY. The max_size is the
   // number of MRU servers that support SPDY that are to be returned.
   void GetSpdyServerList(std::vector<std::string>* spdy_servers,
                          size_t max_size) const;
-
+#endif
+          
   void SetBrokenAndRecentlyBrokenAlternativeServices(
       std::unique_ptr<BrokenAlternativeServiceList>
           broken_alternative_service_list,
@@ -81,9 +85,11 @@ class NET_EXPORT HttpServerPropertiesImpl
   const RecentlyBrokenAlternativeServices&
   recently_broken_alternative_services() const;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Returns flattened string representation of the |host_port_pair|. Used by
   // unittests.
   static std::string GetFlattenedSpdyServer(const HostPortPair& host_port_pair);
+#endif
 
   // Returns the canonical host suffix for |host|, or nullptr if none
   // exists.
@@ -95,9 +101,11 @@ class NET_EXPORT HttpServerPropertiesImpl
 
   void Clear() override;
   bool SupportsRequestPriority(const url::SchemeHostPort& server) override;
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   bool GetSupportsSpdy(const url::SchemeHostPort& server) override;
   void SetSupportsSpdy(const url::SchemeHostPort& server,
                        bool support_spdy) override;
+#endif
   bool RequiresHTTP11(const HostPortPair& server) override;
   void SetHTTP11Required(const HostPortPair& server) override;
   void MaybeForceHTTP11(const HostPortPair& server,
@@ -175,7 +183,9 @@ class NET_EXPORT HttpServerPropertiesImpl
 
   base::DefaultTickClock default_clock_;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   SpdyServersMap spdy_servers_map_;
+#endif
   Http11ServerHostPortSet http11_servers_;
 
   AlternativeServiceMap alternative_service_map_;

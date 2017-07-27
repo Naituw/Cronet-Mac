@@ -20,10 +20,14 @@
 #include "net/log/net_log_source.h"
 #include "net/log/net_log_source_type.h"
 #include "net/socket/client_socket_handle.h"
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 #include "net/spdy/chromium/spdy_proxy_client_socket.h"
 #include "net/spdy/chromium/spdy_session.h"
 #include "net/spdy/chromium/spdy_session_pool.h"
 #include "net/spdy/chromium/spdy_stream.h"
+#endif
+
 #include "net/ssl/ssl_cert_request_info.h"
 #include "url/gurl.h"
 
@@ -43,7 +47,9 @@ HttpProxyClientSocketWrapper::HttpProxyClientSocketWrapper(
     const HostPortPair& endpoint,
     HttpAuthCache* http_auth_cache,
     HttpAuthHandlerFactory* http_auth_handler_factory,
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
     SpdySessionPool* spdy_session_pool,
+#endif
     bool tunnel,
     ProxyDelegate* proxy_delegate,
     const NetLogWithSource& net_log)
@@ -59,11 +65,15 @@ HttpProxyClientSocketWrapper::HttpProxyClientSocketWrapper(
       ssl_params_(ssl_params),
       user_agent_(user_agent),
       endpoint_(endpoint),
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       spdy_session_pool_(spdy_session_pool),
+#endif
       has_restarted_(false),
       tunnel_(tunnel),
       proxy_delegate_(proxy_delegate),
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       using_spdy_(false),
+#endif
       http_auth_controller_(
           tunnel ? new HttpAuthController(
                        HttpAuth::AUTH_PROXY,
@@ -98,9 +108,11 @@ LoadState HttpProxyClientSocketWrapper::GetConnectLoadState() const {
       return transport_socket_handle_->GetLoadState();
     case STATE_HTTP_PROXY_CONNECT:
     case STATE_HTTP_PROXY_CONNECT_COMPLETE:
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
     case STATE_SPDY_PROXY_CREATE_STREAM:
     case STATE_SPDY_PROXY_CREATE_STREAM_COMPLETE:
     case STATE_SPDY_PROXY_CONNECT_COMPLETE:
+#endif
     case STATE_RESTART_WITH_AUTH:
     case STATE_RESTART_WITH_AUTH_COMPLETE:
       return LOAD_STATE_ESTABLISHING_PROXY_TUNNEL;
@@ -148,11 +160,13 @@ HttpProxyClientSocketWrapper::GetAuthController() const {
   return http_auth_controller_;
 }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 bool HttpProxyClientSocketWrapper::IsUsingSpdy() const {
   if (transport_socket_)
     return transport_socket_->IsUsingSpdy();
   return false;
 }
+#endif
 
 NextProto HttpProxyClientSocketWrapper::GetProxyNegotiatedProtocol() const {
   if (transport_socket_)
@@ -185,7 +199,9 @@ void HttpProxyClientSocketWrapper::Disconnect() {
   connect_callback_.Reset();
   connect_timer_.Stop();
   next_state_ = STATE_NONE;
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   spdy_stream_request_.CancelRequest();
+#endif
   if (transport_socket_handle_) {
     if (transport_socket_handle_->socket())
       transport_socket_handle_->socket()->Disconnect();
@@ -365,6 +381,7 @@ int HttpProxyClientSocketWrapper::DoLoop(int result) {
       case STATE_HTTP_PROXY_CONNECT_COMPLETE:
         rv = DoHttpProxyConnectComplete(rv);
         break;
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       case STATE_SPDY_PROXY_CREATE_STREAM:
         DCHECK_EQ(OK, rv);
         rv = DoSpdyProxyCreateStream();
@@ -372,6 +389,7 @@ int HttpProxyClientSocketWrapper::DoLoop(int result) {
       case STATE_SPDY_PROXY_CREATE_STREAM_COMPLETE:
         rv = DoSpdyProxyCreateStreamComplete(rv);
         break;
+#endif
       case STATE_RESTART_WITH_AUTH:
         DCHECK_EQ(OK, rv);
         rv = DoRestartWithAuth();
@@ -429,6 +447,7 @@ int HttpProxyClientSocketWrapper::DoTransportConnectComplete(int result) {
 
 int HttpProxyClientSocketWrapper::DoSSLConnect() {
   if (tunnel_) {
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
     SpdySessionKey key(GetDestination().host_port_pair(), ProxyServer::Direct(),
                        PRIVACY_MODE_DISABLED);
     if (spdy_session_pool_->FindAvailableSession(
@@ -438,6 +457,7 @@ int HttpProxyClientSocketWrapper::DoSSLConnect() {
       next_state_ = STATE_SPDY_PROXY_CREATE_STREAM;
       return OK;
     }
+#endif
   }
   next_state_ = STATE_SSL_CONNECT_COMPLETE;
   transport_socket_handle_.reset(new ClientSocketHandle());
@@ -472,6 +492,7 @@ int HttpProxyClientSocketWrapper::DoSSLConnectComplete(int result) {
       return ERR_PROXY_CERTIFICATE_INVALID;
     }
   }
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // A SPDY session to the proxy completed prior to resolving the proxy
   // hostname. Surface this error, and allow the delegate to retry.
   // See crbug.com/334413.
@@ -479,6 +500,7 @@ int HttpProxyClientSocketWrapper::DoSSLConnectComplete(int result) {
     DCHECK(!transport_socket_handle_->socket());
     return ERR_SPDY_SESSION_ALREADY_EXISTS;
   }
+#endif
   if (result < 0) {
     UMA_HISTOGRAM_MEDIUM_TIMES("Net.HttpProxy.ConnectLatency.Secure.Error",
                                base::TimeTicks::Now() - connect_start_time_);
@@ -490,13 +512,16 @@ int HttpProxyClientSocketWrapper::DoSSLConnectComplete(int result) {
   SSLClientSocket* ssl =
       static_cast<SSLClientSocket*>(transport_socket_handle_->socket());
   negotiated_protocol_ = ssl->GetNegotiatedProtocol();
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   using_spdy_ = negotiated_protocol_ == kProtoHTTP2;
+#endif
 
   // Reset the timer to just the length of time allowed for HttpProxy handshake
   // so that a fast SSL connection plus a slow HttpProxy failure doesn't take
   // longer to timeout than it should.
   SetConnectTimer(proxy_negotiation_timeout_duration_);
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // TODO(rch): If we ever decide to implement a "trusted" SPDY proxy
   // (one that we speak SPDY over SSL to, but to which we send HTTPS
   // request directly instead of through CONNECT tunnels, then we
@@ -505,7 +530,9 @@ int HttpProxyClientSocketWrapper::DoSSLConnectComplete(int result) {
   // a "trusted" SPDY proxy).
   if (using_spdy_ && tunnel_) {
     next_state_ = STATE_SPDY_PROXY_CREATE_STREAM;
-  } else {
+  } else
+#endif
+  {
     next_state_ = STATE_HTTP_PROXY_CONNECT;
   }
   return result;
@@ -526,7 +553,10 @@ int HttpProxyClientSocketWrapper::DoHttpProxyConnect() {
   transport_socket_.reset(new HttpProxyClientSocket(
       transport_socket_handle_.release(), user_agent_, endpoint_,
       GetDestination().host_port_pair(), http_auth_controller_.get(), tunnel_,
-      using_spdy_, negotiated_protocol_, proxy_delegate_,
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+      using_spdy_,
+#endif
+                                                    negotiated_protocol_, proxy_delegate_,
       ssl_params_.get() != nullptr));
   return transport_socket_->Connect(base::Bind(
       &HttpProxyClientSocketWrapper::OnIOComplete, base::Unretained(this)));
@@ -539,6 +569,7 @@ int HttpProxyClientSocketWrapper::DoHttpProxyConnectComplete(int result) {
   return result;
 }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 int HttpProxyClientSocketWrapper::DoSpdyProxyCreateStream() {
   DCHECK(using_spdy_);
   DCHECK(tunnel_);
@@ -570,7 +601,7 @@ int HttpProxyClientSocketWrapper::DoSpdyProxyCreateStream() {
       base::Bind(&HttpProxyClientSocketWrapper::OnIOComplete,
                  base::Unretained(this)));
 }
-
+    
 int HttpProxyClientSocketWrapper::DoSpdyProxyCreateStreamComplete(int result) {
   if (result < 0)
     return result;
@@ -585,6 +616,7 @@ int HttpProxyClientSocketWrapper::DoSpdyProxyCreateStreamComplete(int result) {
   return transport_socket_->Connect(base::Bind(
       &HttpProxyClientSocketWrapper::OnIOComplete, base::Unretained(this)));
 }
+#endif
 
 int HttpProxyClientSocketWrapper::DoRestartWithAuth() {
   DCHECK(transport_socket_);

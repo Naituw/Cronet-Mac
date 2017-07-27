@@ -9,6 +9,7 @@
 #include <string>
 
 #include "base/macros.h"
+#include "net/net_features.h"
 #include "net/base/net_export.h"
 #include "net/socket/ssl_client_socket.h"
 #include "net/socket/stream_socket.h"
@@ -48,9 +49,11 @@ class NET_EXPORT_PRIVATE ProxyClientSocket : public StreamSocket {
   // return OK.
   virtual int RestartWithAuth(const CompletionCallback& callback) = 0;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Returns true of the connection to the proxy is using SPDY.
   virtual bool IsUsingSpdy() const = 0;
-
+#endif
+    
   // Returns the protocol negotiated with the proxy.
   virtual NextProto GetProxyNegotiatedProtocol() const = 0;
 

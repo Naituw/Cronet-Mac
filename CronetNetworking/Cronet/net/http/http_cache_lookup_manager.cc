@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 
 #include "net/http/http_cache_lookup_manager.h"
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+
 #include "net/http/http_request_info.h"
 
 #include "base/memory/ptr_util.h"
@@ -100,3 +103,6 @@ void HttpCacheLookupManager::OnLookupComplete(const GURL& url, int rv) {
 }
 
 }  // namespace net
+
+#endif // #if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+

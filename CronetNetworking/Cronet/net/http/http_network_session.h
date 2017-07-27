@@ -34,8 +34,12 @@
 #endif
 
 #include "net/socket/next_proto.h"
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 #include "net/spdy/chromium/spdy_session_pool.h"
 #include "net/spdy/core/spdy_protocol.h"
+#endif
+
 #include "net/ssl/ssl_client_auth_cache.h"
 
 namespace base {
@@ -77,12 +81,14 @@ class SSLConfigService;
 class TransportClientSocketPool;
 class TransportSecurityState;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 // Specifies the maximum HPACK dynamic table size the server is allowed to set.
 const uint32_t kSpdyMaxHeaderTableSize = 64 * 1024;
 
 // Specifies the maximum concurrent streams server could send (via push).
 const uint32_t kSpdyMaxConcurrentPushedStreams = 1000;
-
+#endif
+    
 // This class holds session objects used by HttpNetworkTransaction objects.
 class NET_EXPORT HttpNetworkSession : public base::MemoryCoordinatorClient {
  public:
@@ -101,6 +107,7 @@ class NET_EXPORT HttpNetworkSession : public base::MemoryCoordinatorClient {
     bool enable_tcp_fast_open_for_ssl;
     bool enable_user_alternate_protocol_ports;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
     // Use SPDY ping frames to test for connection health after idle.
     bool enable_spdy_ping_based_connection_checking;
     bool enable_http2;
@@ -112,7 +119,8 @@ class NET_EXPORT HttpNetworkSession : public base::MemoryCoordinatorClient {
     SpdySessionPool::TimeFunc time_func;
     // Whether to enable HTTP/2 Alt-Svc entries.
     bool enable_http2_alternative_service;
-
+#endif
+      
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     // Enables QUIC support.
     bool enable_quic;
@@ -246,7 +254,10 @@ class NET_EXPORT HttpNetworkSession : public base::MemoryCoordinatorClient {
   CertVerifier* cert_verifier() { return cert_verifier_; }
   ProxyService* proxy_service() { return proxy_service_; }
   SSLConfigService* ssl_config_service() { return ssl_config_service_.get(); }
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   SpdySessionPool* spdy_session_pool() { return &spdy_session_pool_; }
+#endif
+    
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   QuicStreamFactory* quic_stream_factory() { return &quic_stream_factory_; }
 #endif
@@ -272,9 +283,11 @@ class NET_EXPORT HttpNetworkSession : public base::MemoryCoordinatorClient {
   // Creates a Value summary of the state of the socket pools.
   std::unique_ptr<base::Value> SocketPoolInfoToValue() const;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Creates a Value summary of the state of the SPDY sessions.
   std::unique_ptr<base::Value> SpdySessionPoolInfoToValue() const;
-
+#endif
+    
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   // Creates a Value summary of the state of the QUIC sessions and
   // configuration.
@@ -291,7 +304,9 @@ class NET_EXPORT HttpNetworkSession : public base::MemoryCoordinatorClient {
 
   bool IsProtocolEnabled(NextProto protocol) const;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   void SetServerPushDelegate(std::unique_ptr<ServerPushDelegate> push_delegate);
+#endif
 
   // Populates |*alpn_protos| with protocols to be used with ALPN.
   void GetAlpnProtos(NextProtoVector* alpn_protos) const;
@@ -338,11 +353,18 @@ class NET_EXPORT HttpNetworkSession : public base::MemoryCoordinatorClient {
   SSLClientAuthCache ssl_client_auth_cache_;
   std::unique_ptr<ClientSocketPoolManager> normal_socket_pool_manager_;
   std::unique_ptr<ClientSocketPoolManager> websocket_socket_pool_manager_;
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   std::unique_ptr<ServerPushDelegate> push_delegate_;
+#endif
+    
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   QuicStreamFactory quic_stream_factory_;
 #endif
+    
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   SpdySessionPool spdy_session_pool_;
+#endif
+    
   std::unique_ptr<HttpStreamFactory> http_stream_factory_;
   std::unique_ptr<HttpStreamFactory> http_stream_factory_for_websocket_;
   std::map<HttpResponseBodyDrainer*, std::unique_ptr<HttpResponseBodyDrainer>>

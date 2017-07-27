@@ -17,6 +17,7 @@
 #include "base/strings/string_number_conversions.h"
 #include "base/strings/string_util.h"
 #include "base/values.h"
+#include "net/net_features.h"
 #include "net/base/load_flags.h"
 #include "net/base/net_errors.h"
 #include "net/base/proxy_delegate.h"
@@ -31,10 +32,14 @@
 #include "net/socket/ssl_client_socket.h"
 #include "net/socket/ssl_client_socket_pool.h"
 #include "net/socket/transport_client_socket_pool.h"
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 #include "net/spdy/chromium/spdy_proxy_client_socket.h"
 #include "net/spdy/chromium/spdy_session.h"
 #include "net/spdy/chromium/spdy_session_pool.h"
 #include "net/spdy/chromium/spdy_stream.h"
+#endif
+
 #include "net/ssl/ssl_cert_request_info.h"
 #include "url/gurl.h"
 
@@ -83,12 +88,16 @@ HttpProxySocketParams::HttpProxySocketParams(
     const HostPortPair& endpoint,
     HttpAuthCache* http_auth_cache,
     HttpAuthHandlerFactory* http_auth_handler_factory,
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
     SpdySessionPool* spdy_session_pool,
+#endif
     bool tunnel,
     ProxyDelegate* proxy_delegate)
     : transport_params_(transport_params),
       ssl_params_(ssl_params),
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       spdy_session_pool_(spdy_session_pool),
+#endif
       user_agent_(user_agent),
       endpoint_(endpoint),
       http_auth_cache_(tunnel ? http_auth_cache : NULL),
@@ -141,7 +150,9 @@ HttpProxyConnectJob::HttpProxyConnectJob(
           params->endpoint(),
           params->http_auth_cache(),
           params->http_auth_handler_factory(),
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
           params->spdy_session_pool(),
+#endif
           params->tunnel(),
           params->proxy_delegate(),
           this->net_log())) {}

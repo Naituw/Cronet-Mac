@@ -27,8 +27,12 @@
 #endif
 
 #include "net/socket/next_proto.h"
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 #include "net/spdy/core/spdy_framer.h"  // TODO(willchan): Reconsider this.
 #include "net/spdy/core/spdy_protocol.h"
+#endif
+
 #include "url/scheme_host_port.h"
 
 namespace base {
@@ -267,7 +271,11 @@ typedef std::vector<AlternativeService> AlternativeServiceVector;
 typedef std::vector<AlternativeServiceInfo> AlternativeServiceInfoVector;
 // Flattened representation of servers (scheme, host, port) that either support
 // or not support SPDY protocol.
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 typedef base::MRUCache<std::string, bool> SpdyServersMap;
+#endif
+    
 typedef base::MRUCache<url::SchemeHostPort, AlternativeServiceInfoVector>
     AlternativeServiceMap;
 // Pairs of broken alternative services and when their brokenness expires.
@@ -312,6 +320,7 @@ class NET_EXPORT HttpServerProperties {
   // multiple requests.
   virtual bool SupportsRequestPriority(const url::SchemeHostPort& server) = 0;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Returns the value set by SetSupportsSpdy(). If not set, returns false.
   virtual bool GetSupportsSpdy(const url::SchemeHostPort& server) = 0;
 
@@ -319,7 +328,8 @@ class NET_EXPORT HttpServerProperties {
   // thread.
   virtual void SetSupportsSpdy(const url::SchemeHostPort& server,
                                bool support_spdy) = 0;
-
+#endif
+    
   // Returns true if |server| has required HTTP/1.1 via HTTP/2 error code.
   virtual bool RequiresHTTP11(const HostPortPair& server) = 0;
 

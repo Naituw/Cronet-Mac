@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#if !DISABLED_SPDY_HTTP2
+
 #include "net/http/bidirectional_stream.h"
 
 #include <string>
@@ -443,3 +445,6 @@ void BidirectionalStream::UpdateHistograms() {
 }
 
 }  // namespace net
+
+#endif // #if !DISABLED_SPDY_HTTP2
+

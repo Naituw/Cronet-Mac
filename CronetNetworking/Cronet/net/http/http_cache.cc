@@ -331,8 +331,10 @@ HttpCache::HttpCache(std::unique_ptr<HttpTransactionFactory> network_layer,
   if (!is_main_cache)
     return;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   session->SetServerPushDelegate(
       base::MakeUnique<HttpCacheLookupManager>(this));
+#endif
 }
 
 HttpCache::~HttpCache() {

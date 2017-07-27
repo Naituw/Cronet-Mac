@@ -5,6 +5,8 @@
 #ifndef COMPONENTS_GRPC_SUPPORT_BIDIRECTIONAL_STREAM_H_
 #define COMPONENTS_GRPC_SUPPORT_BIDIRECTIONAL_STREAM_H_
 
+#if !DISABLED_SPDY_HTTP2
+
 #include <memory>
 #include <vector>
 
@@ -238,3 +240,5 @@ class BidirectionalStream : public net::BidirectionalStream::Delegate {
 }  // namespace grpc_support
 
 #endif  // COMPONENTS_GRPC_SUPPORT_BIDIRECTIONAL_STREAM_H_
+
+#endif // !DISABLED_SPDY_HTTP2

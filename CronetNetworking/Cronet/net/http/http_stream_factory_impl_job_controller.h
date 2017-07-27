@@ -139,13 +139,14 @@ class HttpStreamFactoryImpl::JobController
 
   bool OnInitConnection(const ProxyInfo& proxy_info) override;
 
-
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Invoked to notify the Request and Factory of the readiness of new
   // SPDY session.
   void OnNewSpdySessionReady(Job* job,
                              const base::WeakPtr<SpdySession>& spdy_session,
                              bool direct) override;
-
+#endif
+          
   // Invoked when the |job| finishes pre-connecting sockets.
   void OnPreconnectsComplete(Job* job) override;
 
@@ -163,6 +164,7 @@ class HttpStreamFactoryImpl::JobController
   // will wait for Job::Resume() to be called before advancing.
   bool ShouldWait(Job* job) override;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Called when |job| determines the appropriate |spdy_session_key| for the
   // Request. Note that this does not mean that SPDY is necessarily supported
   // for this SpdySessionKey, since we may need to wait for NPN to complete
@@ -172,7 +174,8 @@ class HttpStreamFactoryImpl::JobController
 
   // Remove session from the SpdySessionRequestMap.
   void RemoveRequestFromSpdySessionRequestMapForJob(Job* job) override;
-
+#endif
+          
   const NetLogWithSource* GetNetLog() const override;
 
   void MaybeSetWaitTimeForMainJob(const base::TimeDelta& delay) override;
@@ -238,8 +241,11 @@ class HttpStreamFactoryImpl::JobController
 
   // Marks completion of the |request_|.
   void MarkRequestComplete(bool was_alpn_negotiated,
-                           NextProto negotiated_protocol,
-                           bool using_spdy);
+                           NextProto negotiated_protocol
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+                           ,bool using_spdy
+#endif
+                           );
 
   // Must be called when the alternative service job fails. |net_error| is the
   // net error of the failed alternative service job.
@@ -285,10 +291,12 @@ class HttpStreamFactoryImpl::JobController
   // returned.
   QuicVersion SelectQuicVersion(const QuicVersionVector& advertised_versions);
 #endif
-          
+      
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Remove session from the SpdySessionRequestMap.
   void RemoveRequestFromSpdySessionRequestMap();
-
+#endif
+          
   // Returns true if the |request_| can be fetched via an alternative
   // proxy server, and sets |alternative_proxy_server| to the available
   // alternative proxy server. |alternative_proxy_server| should not be null,

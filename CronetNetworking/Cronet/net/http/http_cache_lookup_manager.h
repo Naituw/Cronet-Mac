@@ -6,6 +6,10 @@
 #define NET_HTTP_HTTP_CACHE_LOOKUP_MANAGER_H_
 
 #include "net/base/net_export.h"
+#include "net/net_features.h"
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+
 #include "net/http/http_cache.h"
 #include "net/http/http_cache_transaction.h"
 #include "net/spdy/chromium/server_push_delegate.h"
@@ -15,7 +19,11 @@ namespace net {
 // An implementation of ServerPushDelegate that issues an HttpCache::Transaction
 // to lookup whether the response to the pushed URL is cached and cancel the
 // push in that case.
-class NET_EXPORT_PRIVATE HttpCacheLookupManager : public ServerPushDelegate {
+class NET_EXPORT_PRIVATE HttpCacheLookupManager
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+    : public ServerPushDelegate
+#endif
+    {
  public:
   // |http_cache| MUST outlive the HttpCacheLookupManager.
   explicit HttpCacheLookupManager(HttpCache* http_cache);
@@ -61,5 +69,7 @@ class NET_EXPORT_PRIVATE HttpCacheLookupManager : public ServerPushDelegate {
 };
 
 }  // namespace net
+
+#endif // #if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 
 #endif  // NET_HTTP_HTTP_CACHE_LOOKUP_MANAGER_H_

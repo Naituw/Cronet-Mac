@@ -18,7 +18,9 @@
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/core/quic_packets.h"
 #endif
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 #include "net/spdy/core/spdy_alt_svc_wire_format.h"
+#endif
 #include "url/gurl.h"
 
 namespace net {
@@ -35,15 +37,20 @@ void HttpStreamFactory::ProcessAlternativeServices(
   std::string alternative_service_str;
   headers->GetNormalizedHeader(kAlternativeServiceHeader,
                                &alternative_service_str);
+    
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   SpdyAltSvcWireFormat::AlternativeServiceVector alternative_service_vector;
   if (!SpdyAltSvcWireFormat::ParseHeaderFieldValue(
           alternative_service_str, &alternative_service_vector)) {
     return;
   }
+#endif
 
   // Convert SpdyAltSvcWireFormat::AlternativeService entries
   // to net::AlternativeServiceInfo.
   AlternativeServiceInfoVector alternative_service_info_vector;
+    
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   for (const SpdyAltSvcWireFormat::AlternativeService&
            alternative_service_entry : alternative_service_vector) {
     NextProto protocol =
@@ -91,7 +98,8 @@ void HttpStreamFactory::ProcessAlternativeServices(
     }
     alternative_service_info_vector.push_back(alternative_service_info);
   }
-
+#endif
+    
   session->http_server_properties()->SetAlternativeServices(
       RewriteHost(http_server), alternative_service_info_vector);
 }

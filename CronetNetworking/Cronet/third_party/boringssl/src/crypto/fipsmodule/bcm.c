@@ -16,6 +16,8 @@
 #define _GNU_SOURCE  /* needed for syscall() on Linux. */
 #endif
 
+#if 0
+
 #include <openssl/aead.h>
 #include <openssl/aes.h>
 #include <openssl/base.h>
@@ -677,3 +679,5 @@ void BORINGSSL_FIPS_abort(void) {
   }
 }
 #endif  /* BORINGSSL_FIPS */
+
+#endif

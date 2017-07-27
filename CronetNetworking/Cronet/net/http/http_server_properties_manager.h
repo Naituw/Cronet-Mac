@@ -134,9 +134,12 @@ class NET_EXPORT HttpServerPropertiesManager : public HttpServerProperties {
 
   void Clear() override;
   bool SupportsRequestPriority(const url::SchemeHostPort& server) override;
+    
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   bool GetSupportsSpdy(const url::SchemeHostPort& server) override;
   void SetSupportsSpdy(const url::SchemeHostPort& server,
                        bool support_spdy) override;
+#endif
   bool RequiresHTTP11(const HostPortPair& server) override;
   void SetHTTP11Required(const HostPortPair& server) override;
   void MaybeForceHTTP11(const HostPortPair& server,
@@ -231,7 +234,9 @@ class NET_EXPORT HttpServerPropertiesManager : public HttpServerProperties {
   // Starts the update of cached prefs in |http_server_properties_impl_| on the
   // network thread. Protected for testing.
   void UpdateCacheFromPrefsOnNetworkSequence(
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       std::unique_ptr<SpdyServersMap> spdy_servers_map,
+#endif
       std::unique_ptr<AlternativeServiceMap> alternative_service_map,
       std::unique_ptr<IPAddress> last_quic_address,
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
@@ -264,7 +269,9 @@ class NET_EXPORT HttpServerPropertiesManager : public HttpServerProperties {
   // Update prefs::kHttpServerProperties preferences on pref thread. Executes an
   // optional |completion| callback when finished. Protected for testing.
   void UpdatePrefsOnPrefThread(
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       std::unique_ptr<std::vector<std::string>> spdy_servers,
+#endif
       std::unique_ptr<AlternativeServiceMap> alternative_service_map,
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
       std::unique_ptr<IPAddress> last_quic_address,
@@ -289,7 +296,9 @@ class NET_EXPORT HttpServerPropertiesManager : public HttpServerProperties {
   void OnHttpServerPropertiesChanged();
 
   bool AddServersData(const base::DictionaryValue& server_dict,
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
                       SpdyServersMap* spdy_servers_map,
+#endif
                       AlternativeServiceMap* alternative_service_map,
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
                       ServerNetworkStatsMap* network_stats_map,

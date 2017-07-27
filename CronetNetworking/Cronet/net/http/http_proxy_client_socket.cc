@@ -34,7 +34,9 @@ HttpProxyClientSocket::HttpProxyClientSocket(
     const HostPortPair& proxy_server,
     HttpAuthController* http_auth_controller,
     bool tunnel,
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
     bool using_spdy,
+#endif
     NextProto negotiated_protocol,
     ProxyDelegate* proxy_delegate,
     bool is_https_proxy)
@@ -45,7 +47,9 @@ HttpProxyClientSocket::HttpProxyClientSocket(
       endpoint_(endpoint),
       auth_(http_auth_controller),
       tunnel_(tunnel),
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       using_spdy_(using_spdy),
+#endif
       negotiated_protocol_(negotiated_protocol),
       is_https_proxy_(is_https_proxy),
       redirect_has_load_timing_info_(false),
@@ -86,9 +90,11 @@ HttpProxyClientSocket::GetAuthController() const {
   return auth_;
 }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 bool HttpProxyClientSocket::IsUsingSpdy() const {
   return using_spdy_;
 }
+#endif
 
 NextProto HttpProxyClientSocket::GetProxyNegotiatedProtocol() const {
   return negotiated_protocol_;
@@ -115,7 +121,12 @@ int HttpProxyClientSocket::Connect(const CompletionCallback& callback) {
   // which allows the proxy to see "private" data.  Instead, we should
   // create an SSL tunnel to the origin server using the CONNECT method
   // inside a single SPDY stream.
-  if (using_spdy_ || !tunnel_)
+  bool using_spdy = false;
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+    using_spdy = using_spdy_;
+#endif
+    
+  if (using_spdy || !tunnel_)
     next_state_ = STATE_DONE;
   if (next_state_ == STATE_DONE)
     return OK;

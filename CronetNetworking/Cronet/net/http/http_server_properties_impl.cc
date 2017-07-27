@@ -21,7 +21,10 @@
 namespace net {
 
 HttpServerPropertiesImpl::HttpServerPropertiesImpl(base::TickClock* clock)
-    : spdy_servers_map_(SpdyServersMap::NO_AUTO_EVICT),
+    :
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+    spdy_servers_map_(SpdyServersMap::NO_AUTO_EVICT),
+#endif
       alternative_service_map_(AlternativeServiceMap::NO_AUTO_EVICT),
       broken_alternative_services_(this, clock ? clock : &default_clock_)
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
@@ -44,6 +47,7 @@ HttpServerPropertiesImpl::~HttpServerPropertiesImpl() {
   DCHECK_CALLED_ON_VALID_THREAD(thread_checker_);
 }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 void HttpServerPropertiesImpl::SetSpdyServers(
     std::unique_ptr<SpdyServersMap> spdy_servers_map) {
   DCHECK_CALLED_ON_VALID_THREAD(thread_checker_);
@@ -60,6 +64,7 @@ void HttpServerPropertiesImpl::SetSpdyServers(
       spdy_servers_map_.Put(it->first, it->second);
   }
 }
+#endif
 
 void HttpServerPropertiesImpl::SetAlternativeServiceServers(
     std::unique_ptr<AlternativeServiceMap> alternative_service_map) {
@@ -149,6 +154,7 @@ void HttpServerPropertiesImpl::SetQuicServerInfoMap(
     
 #endif
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 void HttpServerPropertiesImpl::GetSpdyServerList(
     std::vector<std::string>* spdy_servers,
     size_t max_size) const {
@@ -166,6 +172,7 @@ void HttpServerPropertiesImpl::GetSpdyServerList(
     }
   }
 }
+#endif
 
 void HttpServerPropertiesImpl::SetBrokenAndRecentlyBrokenAlternativeServices(
     std::unique_ptr<BrokenAlternativeServiceList>
@@ -189,7 +196,9 @@ HttpServerPropertiesImpl::recently_broken_alternative_services() const {
 
 void HttpServerPropertiesImpl::Clear() {
   DCHECK_CALLED_ON_VALID_THREAD(thread_checker_);
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   spdy_servers_map_.Clear();
+#endif
   alternative_service_map_.Clear();
   canonical_host_to_origin_map_.clear();
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
@@ -205,8 +214,11 @@ bool HttpServerPropertiesImpl::SupportsRequestPriority(
   if (server.host().empty())
     return false;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   if (GetSupportsSpdy(server))
     return true;
+#endif
+    
   const AlternativeServiceInfoVector alternative_service_info_vector =
       GetAlternativeServiceInfos(server);
   for (const AlternativeServiceInfo& alternative_service_info :
@@ -217,6 +229,8 @@ bool HttpServerPropertiesImpl::SupportsRequestPriority(
   }
   return false;
 }
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 
 bool HttpServerPropertiesImpl::GetSupportsSpdy(
     const url::SchemeHostPort& server) {
@@ -246,6 +260,8 @@ void HttpServerPropertiesImpl::SetSupportsSpdy(
   spdy_servers_map_.Put(server.Serialize(), support_spdy);
 }
 
+#endif
+    
 bool HttpServerPropertiesImpl::RequiresHTTP11(
     const HostPortPair& host_port_pair) {
   DCHECK_CALLED_ON_VALID_THREAD(thread_checker_);

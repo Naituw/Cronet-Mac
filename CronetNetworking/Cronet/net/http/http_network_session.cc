@@ -29,6 +29,8 @@
 #include "net/http/url_security_manager.h"
 #include "net/http/http_request_info.h"
 #include "net/proxy/proxy_service.h"
+#include "net/ssl/ssl_config_service.h"
+
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/chromium/quic_crypto_client_stream_factory.h"
 #include "net/quic/chromium/quic_stream_factory.h"
@@ -38,11 +40,15 @@
 #include "net/quic/core/quic_utils.h"
 #include "net/quic/platform/impl/quic_chromium_clock.h"
 #endif
+
 #include "net/socket/client_socket_factory.h"
 #include "net/socket/client_socket_pool_manager_impl.h"
 #include "net/socket/next_proto.h"
 #include "net/socket/ssl_client_socket.h"
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 #include "net/spdy/chromium/spdy_session_pool.h"
+#endif
 
 namespace net {
 
@@ -70,6 +76,7 @@ ClientSocketPoolManager* CreateSocketPoolManager(
 
 }  // unnamed namespace
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 // The maximum receive window sizes for HTTP/2 sessions and streams.
 const int32_t kSpdySessionMaxRecvWindowSize = 15 * 1024 * 1024;  // 15 MB
 const int32_t kSpdyStreamMaxRecvWindowSize = 6 * 1024 * 1024;    //  6 MB
@@ -97,9 +104,11 @@ SettingsMap AddDefaultHttp2Settings(SettingsMap http2_settings) {
 
   return http2_settings;
 }
-
+    
 }  // unnamed namespace
 
+#endif
+    
 HttpNetworkSession::Params::Params()
     : enable_server_push_cancellation(false),
       ignore_certificate_errors(false),
@@ -107,11 +116,13 @@ HttpNetworkSession::Params::Params()
       testing_fixed_https_port(0),
       enable_tcp_fast_open_for_ssl(false),
       enable_user_alternate_protocol_ports(false),
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       enable_spdy_ping_based_connection_checking(true),
       enable_http2(true),
-      spdy_session_max_recv_window_size(kSpdySessionMaxRecvWindowSize),
+ spdy_session_max_recv_window_size(kSpdySessionMaxRecvWindowSize),
       time_func(&base::TimeTicks::Now),
       enable_http2_alternative_service(false),
+#endif
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
       enable_quic(false),
       quic_max_packet_length(kDefaultMaxPacketSize),
@@ -177,7 +188,9 @@ HttpNetworkSession::HttpNetworkSession(const Params& params,
       http_auth_handler_factory_(context.http_auth_handler_factory),
       proxy_service_(context.proxy_service),
       ssl_config_service_(context.ssl_config_service),
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       push_delegate_(nullptr),
+#endif
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
       quic_stream_factory_(
           context.net_log,
@@ -214,6 +227,7 @@ HttpNetworkSession::HttpNetworkSession(const Params& params,
           params.quic_connection_options,
           params.enable_token_binding),
 #endif
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       spdy_session_pool_(context.host_resolver,
                          context.ssl_config_service,
                          context.http_server_properties,
@@ -221,11 +235,13 @@ HttpNetworkSession::HttpNetworkSession(const Params& params,
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
                          params.quic_supported_versions,
 #endif
-                         params.enable_spdy_ping_based_connection_checking,
+                        
+params.enable_spdy_ping_based_connection_checking,
                          params.spdy_session_max_recv_window_size,
                          AddDefaultHttp2Settings(params.http2_settings),
                          params.time_func,
                          context.proxy_delegate),
+#endif
       http_stream_factory_(new HttpStreamFactoryImpl(this, false)),
       http_stream_factory_for_websocket_(new HttpStreamFactoryImpl(this, true)),
       network_stream_throttler_(new NetworkThrottleManagerImpl()),
@@ -242,9 +258,11 @@ HttpNetworkSession::HttpNetworkSession(const Params& params,
   websocket_socket_pool_manager_.reset(CreateSocketPoolManager(
       WEBSOCKET_SOCKET_POOL, context, ssl_session_cache_shard));
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   if (params_.enable_http2) {
     next_protos_.push_back(kProtoHTTP2);
   }
+#endif
 
   next_protos_.push_back(kProtoHTTP11);
 
@@ -260,7 +278,9 @@ HttpNetworkSession::HttpNetworkSession(const Params& params,
 HttpNetworkSession::~HttpNetworkSession() {
   DCHECK_CALLED_ON_VALID_THREAD(thread_checker_);
   response_drainers_.clear();
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   spdy_session_pool_.CloseAllSessions();
+#endif
   base::MemoryCoordinatorClientRegistry::GetInstance()->Unregister(this);
 }
 
@@ -313,10 +333,12 @@ std::unique_ptr<base::Value> HttpNetworkSession::SocketPoolInfoToValue() const {
   return normal_socket_pool_manager_->SocketPoolInfoToValue();
 }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 std::unique_ptr<base::Value> HttpNetworkSession::SpdySessionPoolInfoToValue()
     const {
   return spdy_session_pool_.SpdySessionPoolInfoToValue();
 }
+#endif
 
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 
@@ -379,7 +401,9 @@ std::unique_ptr<base::Value> HttpNetworkSession::QuicInfoToValue() const {
 void HttpNetworkSession::CloseAllConnections() {
   normal_socket_pool_manager_->FlushSocketPoolsWithError(ERR_ABORTED);
   websocket_socket_pool_manager_->FlushSocketPoolsWithError(ERR_ABORTED);
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   spdy_session_pool_.CloseCurrentSessions(ERR_ABORTED);
+#endif
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   quic_stream_factory_.CloseAllSessions(ERR_ABORTED, QUIC_INTERNAL_ERROR);
 #endif
@@ -388,7 +412,9 @@ void HttpNetworkSession::CloseAllConnections() {
 void HttpNetworkSession::CloseIdleConnections() {
   normal_socket_pool_manager_->CloseIdleSockets();
   websocket_socket_pool_manager_->CloseIdleSockets();
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   spdy_session_pool_.CloseCurrentIdleSessions();
+#endif
 }
 
 bool HttpNetworkSession::IsProtocolEnabled(NextProto protocol) const {
@@ -399,7 +425,11 @@ bool HttpNetworkSession::IsProtocolEnabled(NextProto protocol) const {
     case kProtoHTTP11:
       return true;
     case kProtoHTTP2:
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
       return params_.enable_http2;
+#else
+      return false;
+#endif
     case kProtoQUIC:
       return IsQuicEnabled();
   }
@@ -407,6 +437,7 @@ bool HttpNetworkSession::IsProtocolEnabled(NextProto protocol) const {
   return false;
 }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 void HttpNetworkSession::SetServerPushDelegate(
     std::unique_ptr<ServerPushDelegate> push_delegate) {
   DCHECK(push_delegate);
@@ -414,11 +445,14 @@ void HttpNetworkSession::SetServerPushDelegate(
     return;
 
   push_delegate_ = std::move(push_delegate);
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   spdy_session_pool_.set_server_push_delegate(push_delegate_.get());
+#endif
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
   quic_stream_factory_.set_server_push_delegate(push_delegate_.get());
 #endif
 }
+#endif
 
 void HttpNetworkSession::GetAlpnProtos(NextProtoVector* alpn_protos) const {
   *alpn_protos = next_protos_;
@@ -448,8 +482,10 @@ void HttpNetworkSession::DumpMemoryStats(
     http_network_session_dump = pmd->CreateAllocatorDump(name);
     normal_socket_pool_manager_->DumpMemoryStats(
         pmd, http_network_session_dump->absolute_name());
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
     spdy_session_pool_.DumpMemoryStats(
         pmd, http_network_session_dump->absolute_name());
+#endif
     if (http_stream_factory_) {
       http_stream_factory_->DumpMemoryStats(
           pmd, http_network_session_dump->absolute_name());

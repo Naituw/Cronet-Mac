@@ -5,7 +5,12 @@
 #import <Foundation/Foundation.h>
 #import <Security/Security.h>
 
+#if DISABLED_SPDY_HTTP2
+#define GRPC_SUPPORT_EXPORT __attribute__((visibility("default")))
+#else
+#define CRN_SPDY_HTTP2_ENABLED 1
 #include "bidirectional_stream_c.h"
+#endif
 
 // Type of HTTP cache; public interface to private implementation defined in
 // URLRequestContextConfig class.
@@ -181,8 +186,10 @@ GRPC_SUPPORT_EXPORT
 // This is the exact string servers will see.
 + (NSString*)getUserAgent;
 
+#if CRN_SPDY_HTTP2_ENABLED
 // Get a pointer to global instance of cronet_engine for GRPC C API.
 + (stream_engine*)getGlobalEngine;
+#endif
 
 // Returns differences in metrics collected by Cronet since the last call to
 // getGlobalMetricsDeltas, serialized as a [protobuf]

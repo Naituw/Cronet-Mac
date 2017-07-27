@@ -159,7 +159,10 @@ int InitSocketPoolHelper(ClientSocketPoolManager::SocketGroupType group_type,
       http_proxy_params = new HttpProxySocketParams(
           proxy_tcp_params, ssl_params, user_agent, origin_host_port,
           session->http_auth_cache(), session->http_auth_handler_factory(),
-          session->spdy_session_pool(), force_tunnel || using_ssl,
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+          session->spdy_session_pool(),
+#endif
+                                                    force_tunnel || using_ssl,
           session->context().proxy_delegate);
     } else {
       DCHECK(proxy_info.is_socks());

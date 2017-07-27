@@ -459,6 +459,8 @@ namespace {
                               encoding:[NSString defaultCStringEncoding]];
 }
 
+#if CRN_SPDY_HTTP2_ENABLED
+
 + (stream_engine*)getGlobalEngine {
     DCHECK(gChromeNet.Get().get());
     if (gChromeNet.Get().get()) {
@@ -468,6 +470,8 @@ namespace {
     }
     return nil;
 }
+
+#endif
 
 + (NSData*)getGlobalMetricsDeltas {
     if (!gChromeNet.Get().get()) {
@@ -493,11 +497,15 @@ namespace {
                                            base::SysNSStringToUTF8(hostResolverRulesForTesting));
 }
 
+#if CRN_SPDY_HTTP2_ENABLED
+
 // This is a non-public dummy method that prevents the linker from stripping out
 // the otherwise non-referenced methods from 'bidirectional_stream.cc'.
 + (void)preventStrippingCronetBidirectionalStream {
     bidirectional_stream_create(NULL, 0, 0);
 }
+
+#endif
 
 + (NSError*)createIllegalArgumentErrorWithArgument:(NSString*)argumentName
                                             reason:(NSString*)reason {

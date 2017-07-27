@@ -58,9 +58,13 @@
 #include "net/socket/next_proto.h"
 #include "net/socket/socks_client_socket_pool.h"
 #include "net/socket/transport_client_socket_pool.h"
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 #include "net/spdy/chromium/spdy_http_stream.h"
 #include "net/spdy/chromium/spdy_session.h"
 #include "net/spdy/chromium/spdy_session_pool.h"
+#endif
+
 #include "net/ssl/ssl_cert_request_info.h"
 #include "net/ssl/ssl_connection_status_flags.h"
 #include "net/ssl/ssl_private_key.h"

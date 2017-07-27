@@ -207,6 +207,8 @@ bool HttpServerPropertiesManager::SupportsRequestPriority(
   return http_server_properties_impl_->SupportsRequestPriority(server);
 }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+
 bool HttpServerPropertiesManager::GetSupportsSpdy(
     const url::SchemeHostPort& server) {
   DCHECK(network_task_runner_->RunsTasksInCurrentSequence());
@@ -224,6 +226,8 @@ void HttpServerPropertiesManager::SetSupportsSpdy(
   if (old_support_spdy != new_support_spdy)
     ScheduleUpdatePrefsOnNetworkSequence(SUPPORTS_SPDY);
 }
+    
+#endif
 
 bool HttpServerPropertiesManager::RequiresHTTP11(const HostPortPair& server) {
   DCHECK(network_task_runner_->RunsTasksInCurrentSequence());
@@ -553,9 +557,11 @@ void HttpServerPropertiesManager::UpdateCacheFromPrefsOnPrefSequence() {
   std::unique_ptr<IPAddress> addr = base::MakeUnique<IPAddress>();
   ReadSupportsQuic(http_server_properties_dict, addr.get());
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // String is "scheme://host:port" tuple of spdy server.
   std::unique_ptr<SpdyServersMap> spdy_servers_map(
       new SpdyServersMap(SpdyServersMap::NO_AUTO_EVICT));
+#endif
   std::unique_ptr<AlternativeServiceMap> alternative_service_map(
       new AlternativeServiceMap(kMaxAlternateProtocolHostsToPersist));
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
@@ -566,7 +572,10 @@ void HttpServerPropertiesManager::UpdateCacheFromPrefsOnPrefSequence() {
 #endif
     
   if (version < 4) {
-    if (!AddServersData(*servers_dict, spdy_servers_map.get(),
+    if (!AddServersData(*servers_dict,
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+                        spdy_servers_map.get(),
+#endif
                         alternative_service_map.get(),
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
                         server_network_stats_map.get(),
@@ -586,7 +595,10 @@ void HttpServerPropertiesManager::UpdateCacheFromPrefsOnPrefSequence() {
         detected_corrupted_prefs = true;
         continue;
       }
-      if (!AddServersData(*servers_dict, spdy_servers_map.get(),
+      if (!AddServersData(*servers_dict,
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+                          spdy_servers_map.get(),
+#endif
                           alternative_service_map.get(),
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
                           server_network_stats_map.get(),
@@ -641,7 +653,10 @@ void HttpServerPropertiesManager::UpdateCacheFromPrefsOnPrefSequence() {
       FROM_HERE,
       base::Bind(
           &HttpServerPropertiesManager::UpdateCacheFromPrefsOnNetworkSequence,
-          base::Unretained(this), base::Passed(&spdy_servers_map),
+          base::Unretained(this),
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+                 base::Passed(&spdy_servers_map),
+#endif
           base::Passed(&alternative_service_map), base::Passed(&addr),
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
           base::Passed(&server_network_stats_map),
@@ -705,7 +720,9 @@ bool HttpServerPropertiesManager::AddToBrokenAlternativeServices(
 
 bool HttpServerPropertiesManager::AddServersData(
     const base::DictionaryValue& servers_dict,
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
     SpdyServersMap* spdy_servers_map,
+#endif
     AlternativeServiceMap* alternative_service_map,
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
     ServerNetworkStatsMap* network_stats_map,
@@ -715,6 +732,8 @@ bool HttpServerPropertiesManager::AddServersData(
        it.Advance()) {
     // Get server's scheme/host/pair.
     const std::string& server_str = it.key();
+      
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
     std::string spdy_server_url = server_str;
     if (version < 5) {
       // For old version disk data, always use HTTPS as the scheme.
@@ -725,6 +744,8 @@ bool HttpServerPropertiesManager::AddServersData(
       DVLOG(1) << "Malformed http_server_properties for server: " << server_str;
       return false;
     }
+      
+#endif
 
     const base::DictionaryValue* server_pref_dict = nullptr;
     if (!it.value().GetAsDictionary(&server_pref_dict)) {
@@ -732,12 +753,14 @@ bool HttpServerPropertiesManager::AddServersData(
       return false;
     }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
     // Get if server supports Spdy.
     bool supports_spdy = false;
     if (server_pref_dict->GetBoolean(kSupportsSpdyKey, &supports_spdy) &&
         supports_spdy) {
       spdy_servers_map->Put(spdy_server.Serialize(), supports_spdy);
     }
+#endif
 
     if (!AddToAlternativeServiceMap(spdy_server, *server_pref_dict,
                                     alternative_service_map)
@@ -1001,7 +1024,9 @@ bool HttpServerPropertiesManager::AddToQuicServerInfoMap(
 #endif
 
 void HttpServerPropertiesManager::UpdateCacheFromPrefsOnNetworkSequence(
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
     std::unique_ptr<SpdyServersMap> spdy_servers_map,
+#endif
     std::unique_ptr<AlternativeServiceMap> alternative_service_map,
     std::unique_ptr<IPAddress> last_quic_address,
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
@@ -1017,9 +1042,11 @@ void HttpServerPropertiesManager::UpdateCacheFromPrefsOnNetworkSequence(
   // preferences. Update the cached data with new data from preferences.
   DCHECK(network_task_runner_->RunsTasksInCurrentSequence());
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   UMA_HISTOGRAM_COUNTS_1M("Net.CountOfSpdyServers", spdy_servers_map->size());
   http_server_properties_impl_->SetSpdyServers(std::move(spdy_servers_map));
-
+#endif
+    
   // Update the cached data and use the new alternative service list from
   // preferences.
   UMA_HISTOGRAM_COUNTS_1M("Net.CountOfAlternateProtocolServers",
@@ -1086,6 +1113,7 @@ void HttpServerPropertiesManager::UpdatePrefsFromCacheOnNetworkSequence(
     const base::Closure& completion) {
   DCHECK(network_task_runner_->RunsTasksInCurrentSequence());
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // It is in MRU order.
   std::unique_ptr<std::vector<std::string>> spdy_servers =
       base::MakeUnique<std::vector<std::string>>();

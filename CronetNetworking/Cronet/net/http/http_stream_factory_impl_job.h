@@ -30,7 +30,11 @@
 #include "net/socket/client_socket_pool_manager.h"
 #include "net/socket/next_proto.h"
 #include "net/socket/ssl_client_socket.h"
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 #include "net/spdy/chromium/spdy_session_key.h"
+#endif
+
 #include "net/ssl/ssl_config_service.h"
 
 namespace net {
@@ -45,7 +49,11 @@ class ClientSocketHandle;
 class HttpAuthController;
 class HttpNetworkSession;
 class HttpStream;
+    
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 class SpdySessionPool;
+#endif
+    
 class NetLog;
 struct SSLConfig;
 
@@ -115,12 +123,14 @@ class HttpStreamFactoryImpl::Job {
     // contained in |proxy_info| can be skipped.
     virtual bool OnInitConnection(const ProxyInfo& proxy_info) = 0;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
     // Invoked to notify the Request and Factory of the readiness of new
     // SPDY session.
     virtual void OnNewSpdySessionReady(
         Job* job,
         const base::WeakPtr<SpdySession>& spdy_session,
         bool direct) = 0;
+#endif
 
     // Invoked when the |job| finishes pre-connecting sockets.
     virtual void OnPreconnectsComplete(Job* job) = 0;
@@ -138,6 +148,7 @@ class HttpStreamFactoryImpl::Job {
     // will wait for Job::Resume() to be called before advancing.
     virtual bool ShouldWait(Job* job) = 0;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
     // Called when |job| determines the appropriate |spdy_session_key| for the
     // Request. Note that this does not mean that SPDY is necessarily supported
     // for this SpdySessionKey, since we may need to wait for NPN to complete
@@ -147,6 +158,7 @@ class HttpStreamFactoryImpl::Job {
 
     // Remove session from the SpdySessionRequestMap.
     virtual void RemoveRequestFromSpdySessionRequestMapForJob(Job* job) = 0;
+#endif
 
     virtual const NetLogWithSource* GetNetLog() const = 0;
 
@@ -301,8 +313,10 @@ class HttpStreamFactoryImpl::Job {
   void OnStreamReadyCallback();
   void OnBidirectionalStreamImplReadyCallback();
   void OnWebSocketHandshakeStreamReadyCallback();
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // This callback function is called when a new SPDY session is created.
   void OnNewSpdySessionReadyCallback();
+#endif
   void OnStreamFailedCallback(int result);
   void OnCertificateErrorCallback(int result, const SSLInfo& ssl_info);
   void OnNeedsProxyAuthCallback(const HttpResponseInfo& response_info,
@@ -337,12 +351,15 @@ class HttpStreamFactoryImpl::Job {
   int DoRestartTunnelAuthComplete(int result);
 
   void ResumeInitConnection();
+    
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Creates a SpdyHttpStream or a BidirectionalStreamImpl from the given values
   // and sets to |stream_| or |bidirectional_stream_impl_| respectively. Does
   // nothing if |stream_factory_| is for WebSockets.
   int SetSpdyHttpStreamOrBidirectionalStreamImpl(
       base::WeakPtr<SpdySession> session,
       bool direct);
+#endif
 
   // Returns to STATE_INIT_CONNECTION and resets some state.
   void ReturnToStateInitConnection(bool close_connection);
@@ -364,6 +381,7 @@ class HttpStreamFactoryImpl::Job {
                               const GURL& origin_url,
                               const ProxyInfo& proxy_info);
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Called in Job constructor. Use |spdy_session_key_| after construction.
   static SpdySessionKey GetSpdySessionKey(bool spdy_session_direct,
                                           const ProxyServer& proxy_server,
@@ -372,6 +390,7 @@ class HttpStreamFactoryImpl::Job {
 
   // Returns true if the current request can use an existing spdy session.
   bool CanUseExistingSpdySession() const;
+#endif
 
   // Called when we encounter a network error that could be resolved by trying
   // a new proxy configuration.  If there is another proxy configuration to try
@@ -396,6 +415,7 @@ class HttpStreamFactoryImpl::Job {
   // Record histograms of latency until Connect() completes.
   static void LogHttpConnectedMetrics(const ClientSocketHandle& handle);
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Invoked by the transport socket pool after host resolution is complete
   // to allow the connection to be aborted, if a matching SPDY session can
   // be found.  Will return ERR_SPDY_SESSION_ALREADY_EXISTS if such a
@@ -406,6 +426,7 @@ class HttpStreamFactoryImpl::Job {
                               bool enable_ip_based_pooling,
                               const AddressList& addresses,
                               const NetLogWithSource& net_log);
+#endif
 
   const HttpRequestInfo request_info_;
   RequestPriority priority_;
@@ -435,9 +456,11 @@ class HttpStreamFactoryImpl::Job {
   // request.
   const ProxyServer alternative_proxy_server_;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Enable pooling to a SpdySession with matching IP and certificate
   // even if the SpdySessionKey is different.
   const bool enable_ip_based_pooling_;
+#endif
 
   // Unowned. |this| job is owned by |delegate_|.
   Delegate* const delegate_;
@@ -456,6 +479,7 @@ class HttpStreamFactoryImpl::Job {
   QuicVersion quic_version_;
 #endif
     
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // True if Alternative Service protocol field requires that HTTP/2 is used.
   // In this case, Job fails if it cannot pool to an existing SpdySession and
   // the server does not negotiate HTTP/2 on a new socket.
@@ -463,7 +487,8 @@ class HttpStreamFactoryImpl::Job {
 
   // True if Job actually uses HTTP/2.
   bool using_spdy_;
-
+#endif
+    
   // True if this job might succeed with a different proxy config.
   bool should_reconsider_proxy_;
 
@@ -492,6 +517,7 @@ class HttpStreamFactoryImpl::Job {
   // preconnect.
   int num_streams_;
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   // Initialized when we create a new SpdySession.
   base::WeakPtr<SpdySession> new_spdy_session_;
 
@@ -502,6 +528,7 @@ class HttpStreamFactoryImpl::Job {
   const bool spdy_session_direct_;
 
   const SpdySessionKey spdy_session_key_;
+#endif
 
   base::TimeTicks job_stream_ready_start_time_;
 

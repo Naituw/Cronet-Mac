@@ -5,6 +5,8 @@
 #ifndef COMPONENTS_GRPC_SUPPORT_INCLUDE_BIDIRECTIONAL_STREAM_C_H_
 #define COMPONENTS_GRPC_SUPPORT_INCLUDE_BIDIRECTIONAL_STREAM_C_H_
 
+#if !DISABLED_SPDY_HTTP2
+
 #if defined(WIN32)
 #define GRPC_SUPPORT_EXPORT
 #else
@@ -242,5 +244,7 @@ bool bidirectional_stream_is_done(bidirectional_stream* stream);
 #ifdef __cplusplus
 }
 #endif
+
+#endif // !DISABLED_SPDY_HTTP2
 
 #endif  // COMPONENTS_GRPC_SUPPORT_INCLUDE_BIDIRECTIONAL_STREAM_H_

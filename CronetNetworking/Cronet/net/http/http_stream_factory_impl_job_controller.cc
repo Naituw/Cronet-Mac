@@ -23,7 +23,11 @@
 #include "net/log/net_log_source.h"
 #include "net/log/net_log_with_source.h"
 #include "net/proxy/proxy_server.h"
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 #include "net/spdy/chromium/spdy_session.h"
+#endif
+
 #include "url/url_constants.h"
 
 namespace net {
@@ -176,7 +180,10 @@ LoadState HttpStreamFactoryImpl::JobController::GetLoadState() const {
 void HttpStreamFactoryImpl::JobController::OnRequestComplete() {
   DCHECK(request_);
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   RemoveRequestFromSpdySessionRequestMap();
+#endif
+    
   CancelJobs();
   request_ = nullptr;
   if (bound_job_) {
@@ -257,8 +264,11 @@ void HttpStreamFactoryImpl::JobController::OnStreamReady(
   std::unique_ptr<HttpStream> stream = job->ReleaseStream();
   DCHECK(stream);
 
-  MarkRequestComplete(job->was_alpn_negotiated(), job->negotiated_protocol(),
-                      job->using_spdy());
+  MarkRequestComplete(job->was_alpn_negotiated(), job->negotiated_protocol()
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+                      ,job->using_spdy()
+#endif
+                      );
 
   if (!request_)
     return;
@@ -282,8 +292,11 @@ void HttpStreamFactoryImpl::JobController::OnBidirectionalStreamImplReady(
     return;
   }
 
-  MarkRequestComplete(job->was_alpn_negotiated(), job->negotiated_protocol(),
-                      job->using_spdy());
+  MarkRequestComplete(job->was_alpn_negotiated(), job->negotiated_protocol()
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+                      ,job->using_spdy()
+#endif
+                      );
 
   if (!request_)
     return;
@@ -305,8 +318,11 @@ void HttpStreamFactoryImpl::JobController::OnWebSocketHandshakeStreamReady(
     const ProxyInfo& used_proxy_info,
     std::unique_ptr<WebSocketHandshakeStreamBase> stream) {
   DCHECK(job);
-  MarkRequestComplete(job->was_alpn_negotiated(), job->negotiated_protocol(),
-                      job->using_spdy());
+  MarkRequestComplete(job->was_alpn_negotiated(), job->negotiated_protocol()
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+                      ,job->using_spdy()
+#endif
+                      );
 
   if (!request_)
     return;
@@ -464,6 +480,8 @@ bool HttpStreamFactoryImpl::JobController::OnInitConnection(
                                     request_info_.privacy_mode);
 }
 
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+
 void HttpStreamFactoryImpl::JobController::OnNewSpdySessionReady(
     Job* job,
     const base::WeakPtr<SpdySession>& spdy_session,
@@ -530,6 +548,8 @@ void HttpStreamFactoryImpl::JobController::OnNewSpdySessionReady(
     OnOrphanedJobComplete(job);
   }
 }
+    
+#endif
 
 void HttpStreamFactoryImpl::JobController::OnPreconnectsComplete(Job* job) {
   DCHECK_EQ(main_job_.get(), job);
@@ -632,6 +652,8 @@ bool HttpStreamFactoryImpl::JobController::ShouldWait(Job* job) {
   ResumeMainJobLater(main_job_wait_time_);
   return true;
 }
+    
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 
 void HttpStreamFactoryImpl::JobController::SetSpdySessionKey(
     Job* job,
@@ -662,6 +684,8 @@ void HttpStreamFactoryImpl::JobController::
   session_->spdy_session_pool()->RemoveRequestFromSpdySessionRequestMap(
       request_);
 }
+    
+#endif
 
 const NetLogWithSource* HttpStreamFactoryImpl::JobController::GetNetLog()
     const {
@@ -936,8 +960,11 @@ void HttpStreamFactoryImpl::JobController::CancelJobs() {
 void HttpStreamFactoryImpl::JobController::OrphanUnboundJob() {
   DCHECK(request_);
   DCHECK(bound_job_);
+    
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
   RemoveRequestFromSpdySessionRequestMap();
-
+#endif
+    
   if (bound_job_->job_type() == MAIN && alternative_job_) {
     DCHECK(!for_websockets());
     alternative_job_->Orphan();
@@ -991,10 +1018,17 @@ void HttpStreamFactoryImpl::JobController::OnJobSucceeded(Job* job) {
 
 void HttpStreamFactoryImpl::JobController::MarkRequestComplete(
     bool was_alpn_negotiated,
-    NextProto negotiated_protocol,
-    bool using_spdy) {
+    NextProto negotiated_protocol
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+                                                               ,bool using_spdy
+#endif
+                                                               ) {
   if (request_)
-    request_->Complete(was_alpn_negotiated, negotiated_protocol, using_spdy);
+    request_->Complete(was_alpn_negotiated, negotiated_protocol
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
+                       , using_spdy
+#endif
+                       );
 }
 
 void HttpStreamFactoryImpl::JobController::OnAlternativeServiceJobFailed(
@@ -1353,8 +1387,11 @@ int HttpStreamFactoryImpl::JobController::ReconsiderProxyAfterError(Job* job,
       origin_url, request_info_.method, error, &proxy_info_, io_callback_,
       &pac_request_, session_->context().proxy_delegate, net_log_);
   if (rv == OK || rv == ERR_IO_PENDING) {
+      
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
     if (!job->using_quic())
       RemoveRequestFromSpdySessionRequestMap();
+#endif
     // Abandon all Jobs and start over.
     job_bound_ = false;
     bound_job_ = nullptr;

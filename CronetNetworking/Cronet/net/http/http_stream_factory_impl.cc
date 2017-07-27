@@ -26,8 +26,12 @@
 #if BUILDFLAG(ENABLE_QUIC_SUPPORT)
 #include "net/quic/core/quic_server_id.h"
 #endif
+
+#if BUILDFLAG(ENABLE_SPDY_HTTP2_SUPPORT)
 #include "net/spdy/chromium/bidirectional_stream_spdy_impl.h"
 #include "net/spdy/chromium/spdy_http_stream.h"
+#endif
+
 #include "url/gurl.h"
 #include "url/scheme_host_port.h"
 #include "url/url_constants.h"
