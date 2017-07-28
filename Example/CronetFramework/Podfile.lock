@@ -1,0 +1,18 @@
+PODS:
+  - CronetNetworking (0.0.1):
+    - CronetNetworking/no-arc (= 0.0.1)
+  - CronetNetworking/no-arc (0.0.1)
+
+DEPENDENCIES:
+  - CronetNetworking (from `../../`)
+
+EXTERNAL SOURCES:
+  CronetNetworking:
+    :path: "../../"
+
+SPEC CHECKSUMS:
+  CronetNetworking: e8a18e98a8dad7fbfca4a4c5895a908fedd9ecfb
+
+PODFILE CHECKSUM: d41c9eb3d95b156cc39d9f5f537057316921de3a
+
+COCOAPODS: 1.1.1

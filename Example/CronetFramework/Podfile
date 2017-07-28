@@ -1,0 +1,7 @@
+
+platform :osx, '10.10'
+
+install! 'cocoapods', :deterministic_uuids => false
+
+target 'CronetFramework'
+pod 'CronetNetworking', :path => '../../'
