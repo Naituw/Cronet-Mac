@@ -35,5 +35,5 @@ Pod::Spec.new do |s|
   s.public_header_files = ['CronetNetworking/Cronet/components/cronet/ios/{Cronet,bidirectional_stream_c}.h'];
   s.xcconfig = { "USE_HEADERMAP" => "0" ,
                  "HEADER_SEARCH_PATHS" => "$(PODS_ROOT)/Headers/Private/CronetNetworking/third_party/boringssl/src/include"}
-  s.user_target_xcconfig = { '__CronetAvailable__' => 'YES' }
+  s.user_target_xcconfig = { '__CronetAvailable__' => '1' }
 end
