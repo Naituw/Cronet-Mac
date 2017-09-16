@@ -1,9 +1,9 @@
 Pod::Spec.new do |s|
-  s.name         = "CronetFramework"
+  s.name         = "CronetLibrary"
   s.version      = "0.0.1"
-  s.summary      = "Cronet.framework for Mac"
+  s.summary      = "libCronet.a for Mac"
   s.description  = <<-DESC
-                      Cronet.framework for Mac
+                      libCronet.a for Mac
                    DESC
 
   s.homepage     = "https://chromium.googlesource.com/chromium/src/+/lkgr/components/cronet"
