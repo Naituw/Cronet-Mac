@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.license      = { :type => "LGPL" }
 
   s.authors      = ['Chromium Authors']
-  s.source       = { :git => "https://github.com/Naituw/Cronet-Mac.git"}
+  s.source       = { :git => "https://github.com/Naituw/Cronet-Mac.git", :branch => "dev_331"}
 
   s.platform = :osx, '10.10'
   s.frameworks = ['GSS', 'AppKit', 'SystemConfiguration', 'Foundation']
