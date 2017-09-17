@@ -11,8 +11,8 @@ EXTERNAL SOURCES:
     :path: "../../"
 
 SPEC CHECKSUMS:
-  CronetNetworking: e8a18e98a8dad7fbfca4a4c5895a908fedd9ecfb
+  CronetNetworking: 48861c586035f80b0a67bf10c94039cef2db94dc
 
 PODFILE CHECKSUM: d41c9eb3d95b156cc39d9f5f537057316921de3a
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.2.1
