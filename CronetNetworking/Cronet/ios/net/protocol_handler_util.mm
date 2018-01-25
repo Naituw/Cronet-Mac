@@ -204,6 +204,11 @@ void CopyHttpHeaders(NSURLRequest* in_request, URLRequest* out_request) {
       // The user agent string is added by the network stack, and might be
       // different from the one provided by UIWebView. Do not copy it.
       NSString* value = [headers objectForKey:key];
+        
+      if ([key isEqualToString:@"Cronet-UA-Override"]) {
+        key = @"User-Agent";
+      }
+        
       net_headers.SetHeader(base::SysNSStringToUTF8(key),
                             base::SysNSStringToUTF8(value));
     }
