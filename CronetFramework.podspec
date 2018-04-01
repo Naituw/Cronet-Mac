@@ -22,7 +22,5 @@ Pod::Spec.new do |s|
 
   s.source_files = framework_path
   s.vendored_frameworks = framework_path
-  s.user_target_xcconfig = { '__CronetAvailable__' => '1',
-                             '__CronetIsFramework__' => '1'}
 
 end

@@ -393,6 +393,10 @@ namespace {
         } else {
             cronet::CronetEnvironment::Initialize();
         }
+        
+#ifndef NDEBUG
+        NSLog(@"[Cronet] Started In Debug Mode.");
+#endif
     });
     
     [self startInternal];

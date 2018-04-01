@@ -21,7 +21,5 @@ Pod::Spec.new do |s|
 
   s.source_files = ['CronetNetworking/Cronet/components/cronet/ios/{Cronet,bidirectional_stream_c}.h']
   s.vendored_libraries = library_path
-  s.user_target_xcconfig = { '__CronetAvailable__' => '1',
-                             '__CronetIsFramework__' => '0'}
 
 end

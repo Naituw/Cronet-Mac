@@ -11,7 +11,7 @@ EXTERNAL SOURCES:
     :path: "../../"
 
 SPEC CHECKSUMS:
-  CronetNetworking: 7d4a1261a96abd4ed747f3f931130cbe7d28d397
+  CronetNetworking: b0514a2e001746d10bf8b3d42be5a19525d21cc9
 
 PODFILE CHECKSUM: 233ea15fdcea64c44d7abed4cd8be8931f5956ea
 
